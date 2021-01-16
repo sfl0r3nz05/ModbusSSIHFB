@@ -35,7 +35,7 @@
         "peer1.org1.example.com"
       ],
       "certificateAuthorities": [
-        "ca-org1"
+        "ca.org1.example.com"
       ],
       "users": {
         "Admin": {
@@ -55,7 +55,7 @@
         "peer1.org2.example.com"
       ],
       "certificateAuthorities": [
-        "ca-org2"
+        "ca.org2.example.com"
       ],
       "users": {
         "Admin": {
@@ -126,7 +126,7 @@
     }
   },
   "certificateAuthorities": {
-    "ca-org1": {
+    "ca.org1.example.com": {
       "url": "https://localhost:7054",
       "grpcOptions": {
         "verify": true
@@ -141,7 +141,7 @@
         }
       ]
     },
-    "ca-org2": {
+    "ca.org2.example.com": {
       "url": "https://localhost:8054",
       "grpcOptions": {
         "verify": true

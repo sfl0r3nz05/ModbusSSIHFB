@@ -71,6 +71,8 @@ services:
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.example.com:7052
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.org1.example.com:5984
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:1.4.6
       - GODEBUG=netdns=go+1
@@ -78,7 +80,7 @@ services:
       #- CORE_PEER_ID=peer0
       - CORE_PEER_ADDRESSAUTODETECT=false
       - CORE_LOGGING_LEVEL=DEBUG
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=2org_2peer_solo_goleveldb_default # uncomment this to use specific network
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=2org_2peer_solo_couchdb_default # uncomment this to use specific network
       #- CORE_PEER_NETWORKID=dev
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false # this node is the group leader, default to false
@@ -102,6 +104,17 @@ services:
       - 7053:7053
       - 9441:9441
     command: peer node start
+    depends_on:
+      - orderer.example.com
+      - couchdb.org1.example.com
+
+  couchdb.org1.example.com:
+    container_name: couchdb.org1.example.com
+    image: hyperledger/fabric-couchdb:latest
+    ports:
+      - 5984:5984
+    environment:
+      DB_URL: http://localhost:5984/member_db
 
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
@@ -111,6 +124,8 @@ services:
       - CORE_PEER_ID=peer0.org2.example.com
       - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.org2.example.com:5984
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.example.com:7052
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
       - CORE_PEER_LOCALMSPID=Org2MSP
@@ -120,7 +135,7 @@ services:
       #- CORE_PEER_ID=peer0
       - CORE_PEER_ADDRESSAUTODETECT=false
       - CORE_LOGGING_LEVEL=DEBUG
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=2org_2peer_solo_goleveldb_default # uncomment this to use specific network
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=2org_2peer_solo_couchdb_default # uncomment this to use specific network
       #- CORE_PEER_NETWORKID=dev
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false # this node is the group leader, default to false
@@ -144,6 +159,17 @@ services:
       - 8053:7053
       - 9442:9442
     command: peer node start
+    depends_on:
+      - orderer.example.com
+      - couchdb.org2.example.com
+
+  couchdb.org2.example.com:
+    container_name: couchdb.org2.example.com
+    image: hyperledger/fabric-couchdb:latest
+    ports:
+      - 6984:5984
+    environment:
+      DB_URL: http://localhost:5984/member_db
 
   prometheus:
     image: prom/prometheus

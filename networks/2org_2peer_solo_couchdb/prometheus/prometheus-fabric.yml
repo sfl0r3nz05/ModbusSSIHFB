@@ -16,7 +16,7 @@ scrape_configs:
             "pushGateway:9091",
             "orderer.example.com:9440",
             "peer0.org1.example.com:9441",
-            "peer0.org2.example.com:9442"
+            "peer0.org2.example.com:9442",
           ]
   - job_name: cadvisor
     scrape_interval: 5s

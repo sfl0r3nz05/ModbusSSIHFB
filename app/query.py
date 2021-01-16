@@ -4,7 +4,7 @@ from hfc.fabric import Client
 
 loop = asyncio.get_event_loop()
 
-cli = Client(net_profile="../connection-profile/2org_2peer_solo/network.json")
+cli = Client(net_profile="../connection-profile/2org_1peer_solo/network.json")
 org1_admin = cli.get_user('org1.example.com', 'Admin')
 org2_admin = cli.get_user('org2.example.com', 'Admin')
 
@@ -37,31 +37,9 @@ print("response", response)
 #args = ['b']
 # The response should be true if succeed
 # response = loop.run_until_complete(cli.chaincode_query(
-#    requestor=org1_admin,
-#    channel_name='modbuschannel',
-#    peers=['peer1.org1.example.com'],
-#    args=args,
-#    cc_name='registration_cc_v2'
-# ))
-
-# Query a chaincode
-#args = ['b']
-# The response should be true if succeed
-# response = loop.run_until_complete(cli.chaincode_query(
 #    requestor=org2_admin,
 #    channel_name='modbuschannel',
 #    peers=['peer0.org2.example.com'],
-#    args=args,
-#    cc_name='registration_cc_v2'
-# ))
-
-# Query a chaincode
-#args = ['b']
-# The response should be true if succeed
-# response = loop.run_until_complete(cli.chaincode_query(
-#    requestor=org2_admin,
-#    channel_name='businesschannel',
-#    peers=['peer1.org2.example.com'],
 #    args=args,
 #    cc_name='registration_cc_v2'
 # ))

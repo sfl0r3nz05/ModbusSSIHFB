@@ -4,7 +4,7 @@ from hfc.fabric import Client
 
 loop = asyncio.get_event_loop()
 
-cli = Client(net_profile="../connection-profile/2org_1peer_solo/network.json")
+cli = Client(net_profile="../connection-profile/2org_2peer_solo/network.json")
 org1_admin = cli.get_user('org1.example.com', 'Admin')
 org2_admin = cli.get_user('org2.example.com', 'Admin')
 

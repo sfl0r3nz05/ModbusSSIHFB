@@ -192,3 +192,23 @@ services:
     ports:
       - 8080:8080
     restart: always
+
+  administrator:
+    image: sflorenz05/modbusssihfb:administrator
+    container_name: administrator
+    hostname: administrator
+    depends_on: 
+      - orderer.example.com
+      - peer0.org1.example.com
+      - peer0.org2.example.com
+      - ca.org1.example.com
+      - ca.org2.example.com
+    working_dir: /HFBapp
+    volumes:
+      - ./../../app:/HFBapp
+      - ./../../connection-profile:/connection-profile
+      - ./../../crypto-material:/crypto-material
+      - ./../../chaincode:/chaincode
+    command: sh -c "python3 channel-join.py && python3 deploy-chaincode.py"
+    ports:
+      - 6020:6020

@@ -1,0 +1,39 @@
+version: "3"
+
+volumes:
+  prometheus_data: {}
+  grafana_storage: {}
+
+services:     
+  sync-server:
+    image: sflorenz05/modbusssihfb:sync-server
+    container_name: sync-server
+    working_dir: /app/HFBapp
+    volumes:
+      - ./sync-server/sync-server.py:/sync-server.py
+      - ./sync-server/sync.py:/usr/local/lib/python3.8/dist-packages/pymodbus/server/sync.py
+      - ../../app:/app/HFBapp
+      - ../../connection-profile:/app/connection-profile
+      - ../../crypto-material:/app/crypto-material
+      - ../../chaincode:/app/chaincode
+    command: sh -c "python3 ../../sync-server.py"
+    ports: 
+      - 5020:5020
+
+  sync-client:
+    image: sflorenz05/modbusssihfb:sync-client
+    container_name: sync-client
+    environment: 
+      - IP_SERVER=192.168.192.2
+    depends_on: 
+      - sync-server
+    working_dir: /app/HFBapp
+    volumes:
+      - ./sync-client/sync-client.py:/sync-client.py
+      - ../../app:/app/HFBapp
+      - ../../connection-profile:/app/connection-profile
+      - ../../crypto-material:/app/crypto-material
+      - ../../chaincode:/app/chaincode
+    command: sh -c "python3 ../../sync-client.py"
+    ports: 
+      - 5021:5021

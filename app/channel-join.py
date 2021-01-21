@@ -1,5 +1,7 @@
 import asyncio
 from hfc.fabric import Client
+from hfc.fabric_network import wallet
+from hfc.fabric_ca.caservice import ca_service
 
 loop = asyncio.get_event_loop()
 

@@ -1,30 +1,19 @@
 package main
 
 import (
-	log "log"
+	"fmt"
 	"encoding/json"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	sc "github.com/hyperledger/fabric/protos/peer")
+	sc  "github.com/hyperledger/fabric/protos/peer")
 
-
-// Chaincode struct
+// Chaincode example simple Chaincode implementation
 type Chaincode struct {
-}
-
-// IdentityRequest to serialize args
-type IdentityRequest struct {
-	Did        string `json:"did"`
-	Controller string `json:"controller,omitempty"`
-	PublicKey  string `json:"publicKey"`
-	Payload    string `json:"payload,omitempty"` // me pasa una firma // el controller lo meto yo
-	Access     int    `json:"access,omitempty"`
 }
 
 // Identity stored in bc
 type Identity struct {
 	PublicKey  string `json:"publicKey"`
 	Controller string `json:"controller"` // issuer's DID
-	Access     int    `json:"access,omitempty"`
 }
 
 // Error responses
@@ -66,74 +55,100 @@ const (
 	JoseUTIL              = `JOSE Util`
 )
 
-func (cc *Chaincode) Init(stub shim.ChaincodeStubInterface) sc.Response {
-	idReq := IdentityRequest{}
+func (t *Chaincode) Init(stub shim.ChaincodeStubInterface) sc .Response {
+	fmt.Println("Init")
 	_, args := stub.GetFunctionAndParameters()
+	var did string
+	var publicKey string
+	var controller string
+	var identity Identity
+	var err error
 
 	if len(args) != 3 {
-		return shim.Error("Incorrect argument numbers. Expecting 4")
+		return shim.Error("Incorrect argument numbers. Expecting 3")
 	}
 
-	idReq.Did = args[0]
-	idReq.Controller= args[1]
-	idReq.PublicKey= args[2]
+	did = args[0]
+	controller = args[1]
+	publicKey = args[2]
+	identity.PublicKey = publicKey
+	identity.Controller = controller
+	jsonAsBytes, _ := json.Marshal(identity)
 
-
-	identityStore := Identity{PublicKey: idReq.PublicKey, Controller: idReq.Controller, Access: 4}
-
-	idBytes, err := json.Marshal(identityStore)
+	err = stub.PutState(did, jsonAsBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-
-	err = stub.PutState(idReq.Did, idBytes)
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
 	return shim.Success(nil)
 }
 
-// Invoke is called as a result of an application request to run the chaincode.
-func (cc *Chaincode) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
+func (t *Chaincode) Invoke(stub shim.ChaincodeStubInterface) sc .Response {
+	fmt.Println("Invoke")
 	function, args := stub.GetFunctionAndParameters()
-	var err error
-	var result string
-	if function == "query" {
-		return cc.getIDRegistry(stub, args)
+	if function == "setIdRegistry" {
+		return t.setIdRegistry(stub, args)
+	} else if function == "getIdRegistry" {
+		return t.getIdRegistry(stub, args)
 	}
+	return shim.Error("Invalid invoke function name. Expecting \"setIDRegistry\" \"getIDRegistry\"")
+}
+
+func (t *Chaincode) setIdRegistry(stub shim.ChaincodeStubInterface, args []string) sc .Response {
+	var err error
+	var did string
+	var publicKey string
+	var identity Identity
+	var controller string
+
+	if len(args) != 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 3")
+	}
+
+	did = args[0]
+	controller = args[1]
+	publicKey = args[2]
+	
+	identity.PublicKey = publicKey
+	identity.Controller = controller
+	jsonAsBytes, _ := json.Marshal(identity) //marshal a marbles index struct with emtpy array of strings to clear the index
+
+	// Write the state to the ledger
+	err = stub.PutState(did, jsonAsBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	return shim.Success([]byte(result))
+	return shim.Success(nil)
 }
 
-func (cc *Chaincode) getIDRegistry(stub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (t *Chaincode) getIdRegistry(stub shim.ChaincodeStubInterface, args []string) sc .Response {
+	var did string
+	var err error
 
-	var did string // Entities
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting name of the person to getIdRegistry")
+	}
+
 	did = args[0]
-	idStored := Identity{}
-	idBytes, err := stub.GetState(did)
+
+	didBytes, err := stub.GetState(did)
+
 	if err != nil {
 		jsonResp := "{\"Error\":\"Failed to get state for " + did + "\"}"
 		return shim.Error(jsonResp)
 	}
-	if idBytes == nil {
-		return shim.Error(ERRORnotID)
+	if didBytes == nil {
+		jsonResp := "{\"Error\":\"Nil amount for " + did + "\"}"
+		return shim.Error(jsonResp)
 	}
-	err = json.Unmarshal(idBytes, &idStored)
-	if err != nil {
-		log.Errorf("[%s][%s][getIDRegistry] Error parsing identity: %v", CHANNEL_ENV, IDREGISTRY, err.Error())
-		return nil, errors.New(ERRORParsingID + err.Error())
-	}
-	log.Infof("Get Identity: %s",idBytes)
+	jsonResp := "{\"Name\":\"" + did + "\",\"Amount\":\"" + string(didBytes) + "\"}"
+	fmt.Printf("getIdRegistry Response:%s\n", jsonResp)
 
-	return shim.Success(idBytes)
+	return shim.Success(didBytes)
 }
 
 func main() {
 	err := shim.Start(new(Chaincode))
 	if err != nil {
-		panic(err)
+		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
 }

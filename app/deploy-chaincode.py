@@ -41,7 +41,7 @@ responses = loop.run_until_complete(cli.chaincode_install(
 ))
 
 # Instantiate Chaincode in Channel, the response should be true if succeed
-args = ["did:vtn:trustos:company:0", "did:vtn:trustos:company:0", "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7NBDzVMESXU/yuARe7YU\nGrkgNMZh5eA5w3PgxgYZf/isDLPHvmSM2Q9cTauDroriGInikQxtZ/CI4+9Qi4Rd\nJCHjeWhzw0hTIXhHoohyo9QTbUVetb4RBDJEcNqFrpztAojn8Ib5EF2soBFtBLyT\nguxlizcWwTZvv+KxHGBg/tUE7JIqw3YzmEK31faR2HhkPPqxTQ9F+h4SOnY9e6Cf\nh75PpjouzarpntSVkAqv/Ot5kV3O4TcWhB0vUr/HZwx2iX+LEyYock8Sx4Op20/g\n7k3J3rYhMGTHfkKMhZjX9QoZ8uBRiSxieAaia0yZSIcycgE6Aqu6KT+WaQn4bCnh\nwQIDAQAB\n-----END PUBLIC KEY-----"]
+args = ["did:vtn:trustos:company:0", "did:vtn:trustos:company:0", "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7NBDzVMESXU/yuARe7YUGrkgNMZh5eA5w3PgxgYZf/isDLPHvmSM2Q9cTauDroriGInikQxtZ/CI4+9Qi4RdJCHjeWhzw0hTIXhHoohyo9QTbUVetb4RBDJEcNqFrpztAojn8Ib5EF2soBFtBLyTguxlizcWwTZvv+KxHGBg/tUE7JIqw3YzmEK31faR2HhkPPqxTQ9F+h4SOnY9e6Cfh75PpjouzarpntSVkAqv/Ot5kV3O4TcWhB0vUr/HZwx2iX+LEyYock8Sx4Op20/g7k3J3rYhMGTHfkKMhZjX9QoZ8uBRiSxieAaia0yZSIcycgE6Aqu6KT+WaQn4bCnhnwQIDAQAB-----END PUBLIC KEY-----"]
 
 # policy, see https://hyperledger-fabric.readthedocs.io/en/release-1.4/endorsement-policies.html
 policy = {
@@ -78,6 +78,7 @@ response = loop.run_until_complete(cli.chaincode_query(
     peers=['peer0.org1.example.com'],
     args=args,
     cc_name='proxy_cc',
+    fcn='getIdRegistry',
 ))
 
 # Query a chaincode
@@ -89,4 +90,5 @@ response = loop.run_until_complete(cli.chaincode_query(
     peers=['peer0.org2.example.com'],
     args=args,
     cc_name='proxy_cc',
+    fcn='getIdRegistry',
 ))

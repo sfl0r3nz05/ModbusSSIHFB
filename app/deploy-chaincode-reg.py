@@ -26,8 +26,8 @@ print("gopath", gopath)
 responses = loop.run_until_complete(cli.chaincode_install(
     requestor=org1_admin,
     peers=['peer0.org1.example.com'],
-    cc_path='github.com/proxy_cc',
-    cc_name='proxy_cc',
+    cc_path='github.com/registration_cc_v2',
+    cc_name='registration_cc_v2',
     cc_version='v1.0'
 ))
 
@@ -35,13 +35,13 @@ responses = loop.run_until_complete(cli.chaincode_install(
 responses = loop.run_until_complete(cli.chaincode_install(
     requestor=org2_admin,
     peers=['peer0.org2.example.com'],
-    cc_path='github.com/proxy_cc',
-    cc_name='proxy_cc',
+    cc_path='github.com/registration_cc_v2',
+    cc_name='registration_cc_v2',
     cc_version='v1.0'
 ))
 
 # Instantiate Chaincode in Channel, the response should be true if succeed
-args = ["did:vtn:trustos:company:0", "did:vtn:trustos:company:0", "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7NBDzVMESXU/yuARe7YU\nGrkgNMZh5eA5w3PgxgYZf/isDLPHvmSM2Q9cTauDroriGInikQxtZ/CI4+9Qi4Rd\nJCHjeWhzw0hTIXhHoohyo9QTbUVetb4RBDJEcNqFrpztAojn8Ib5EF2soBFtBLyT\nguxlizcWwTZvv+KxHGBg/tUE7JIqw3YzmEK31faR2HhkPPqxTQ9F+h4SOnY9e6Cf\nh75PpjouzarpntSVkAqv/Ot5kV3O4TcWhB0vUr/HZwx2iX+LEyYock8Sx4Op20/g\n7k3J3rYhMGTHfkKMhZjX9QoZ8uBRiSxieAaia0yZSIcycgE6Aqu6KT+WaQn4bCnh\nwQIDAQAB\n-----END PUBLIC KEY-----"]
+args = ["Qmeq4hW6kK2abdbpE2vc7FjSX1xmn1tphg2hGrHFGxqk16"]
 
 # policy, see https://hyperledger-fabric.readthedocs.io/en/release-1.4/endorsement-policies.html
 policy = {
@@ -59,7 +59,7 @@ response = loop.run_until_complete(cli.chaincode_instantiate(
     channel_name='modbuschannel',
     peers=['peer0.org1.example.com'],
     args=args,
-    cc_name='proxy_cc',
+    cc_name='registration_cc_v2',
     cc_version='v1.0',
     # cc_endorsement_policy=policy,  # optional, but recommended
     collections_config=None,  # optional, for private data policy
@@ -70,23 +70,23 @@ response = loop.run_until_complete(cli.chaincode_instantiate(
 print("response", response)
 
 # Query a chaincode, [a]
-args = ["did:vtn:trustos:company:0"]
+args = ["client"]
 # The response should be true if succeed
 response = loop.run_until_complete(cli.chaincode_query(
     requestor=org1_admin,
     channel_name='modbuschannel',
     peers=['peer0.org1.example.com'],
     args=args,
-    cc_name='proxy_cc',
+    cc_name='registration_cc_v2'
 ))
 
 # Query a chaincode
-args = ["did:vtn:trustos:company:0"]
+args = ["client"]
 # The response should be true if succeed
 response = loop.run_until_complete(cli.chaincode_query(
     requestor=org2_admin,
     channel_name='modbuschannel',
     peers=['peer0.org2.example.com'],
     args=args,
-    cc_name='proxy_cc',
+    cc_name='registration_cc_v2'
 ))

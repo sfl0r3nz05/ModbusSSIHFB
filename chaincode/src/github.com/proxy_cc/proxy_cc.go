@@ -3,57 +3,14 @@ package main
 import (
 	"fmt"
 	"encoding/json"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	sc  "github.com/hyperledger/fabric/protos/peer")
+	sc  "github.com/hyperledger/fabric/protos/peer"
+)
 
 // Chaincode example simple Chaincode implementation
 type Chaincode struct {
 }
-
-// Identity stored in bc
-type Identity struct {
-	PublicKey  string `json:"publicKey"`
-	Controller string `json:"controller"` // issuer's DID
-}
-
-// Error responses
-const (
-	ERRORWrongNumberArgs  = `Wrong number of arguments. Expecting a JSON with token information.`
-	ERRORParsingData      = `Error parsing data `
-	ERRORPutState         = `Failed to store data in the ledger.	`
-	ERRORGetState         = `Failed to get data from the ledger. `
-	ERRORDelState         = `Failed to delete data from the ledger. `
-	ERRORChaincodeCall    = `Error calling chaincode`
-	ERRORGetService       = `Error getting service`
-	ERRORUpdService       = `Error updating service`
-	ERRORServiceNotExists = `Error The service doesn't exist`
-	ERRORCreatingService  = "Error storing service"
-	ERRORParsingService   = `Error parsing service`
-	ERRORServiceExists    = `The service already exists in registry`
-	ERRORDidMissing       = `Error calling service, no service DID Specified`
-	ERRORStoringIdentity  = `Error storing identity`
-	ERRORUpdatingID       = `Error updating identity in ledger`
-	ERRORGetID            = `Error getting identity`
-	ERRORVerID            = `Error verification unauthorized, the did provided has not access`
-	ERRORRevID            = `Error revocation unauthorized, the did provided has not access`
-	ERRORVerSign          = `Error verifying signature`
-	ERRORRevSign          = `Error revoking signature`
-	ERRORRevoke           = `Error revoking Unauthorized, the did provided cannot revoke the identity`
-	ERRORnotID            = `Error the identity does not exist`
-	ERRORParsingID        = `Error parsing identity`
-	ERRORRevokeLedger     = `Error deleting from ledger`
-	ERRORIDExists         = `Error the identity already exists`
-	ERRORUserAccess       = `Error user has not access`
-	ERRORParseJWS         = `Error parsing into JWS`
-	ERRORParseX509        = `Error parsing into X509`
-	ERRORBase64           = `Error decoding into base64`
-	ERRORVerifying        = `Error verifying signature `
-	IDGATEWAY             = `ID Gateway`
-	IDREGISTRY            = `ID Registry`
-	ServiceGATEWAY        = `ID Service Gateway`
-	ServiceREGISTRY       = `ID Service Registry`
-	JoseUTIL              = `JOSE Util`
-)
 
 func (t *Chaincode) Init(stub shim.ChaincodeStubInterface) sc .Response {
 	fmt.Println("Init")

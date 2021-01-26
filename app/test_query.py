@@ -51,7 +51,7 @@ gopath = os.path.normpath(os.path.join(
     '../chaincode'
 ))
 os.environ['GOPATH'] = os.path.abspath(gopath)
-args = ["did:vtn:trustos:ceit:0"]
+args = ["did:vtn:trustos:trienekens:0"]
 response = loop.run_until_complete(cli.chaincode_query(
     requestor=org1_admin,
     channel_name='modbuschannel',

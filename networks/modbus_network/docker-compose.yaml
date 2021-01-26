@@ -10,9 +10,9 @@ services:
     container_name: sync-server
     working_dir: /app/HFBapp
     volumes:
-      - ./sync-server/sync-server.py:/sync-server.py
-      - ./sync-server/sync.py:/usr/local/lib/python3.8/dist-packages/pymodbus/server/sync.py
-      - ../../app:/app/HFBapp
+      - ../../app/modbus-sync-server/sync-server.py:/sync-server.py
+      - ../../app/modbus-sync-server/sync.py:/usr/local/lib/python3.8/dist-packages/pymodbus/server/sync.py
+      - ../../app/modbus-sync-server:/app/HFBapp
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material
       - ../../chaincode:/app/chaincode
@@ -24,13 +24,13 @@ services:
     image: sflorenz05/modbusssihfb:sync-client
     container_name: sync-client
     environment: 
-      - IP_SERVER=192.168.192.2
+      - IP_SERVER=192.168.96.2
     depends_on: 
       - sync-server
     working_dir: /app/HFBapp
     volumes:
-      - ./sync-client/sync-client.py:/sync-client.py
-      - ../../app:/app/HFBapp
+      - ../../app/modbus-sync-client/sync-client.py:/sync-client.py
+      - ../../app/modbus-sync-client:/app/HFBapp
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material
       - ../../chaincode:/app/chaincode

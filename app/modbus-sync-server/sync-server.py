@@ -56,7 +56,7 @@ def run_server():
     _logger.debug("Query Server response %s" % response)
 
     StartTcpServer(context, identity=identity, address=(
-        "192.168.192.2", 5020), response=response['hash'])
+        "192.168.96.2", 5020), response=response['hash'])
 
 
 if __name__ == "__main__":

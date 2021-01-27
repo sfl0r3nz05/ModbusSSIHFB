@@ -205,7 +205,7 @@ services:
       - ca.org2.example.com
     working_dir: /HFBapp
     volumes:
-      - ./../../app/administrador:/HFBapp
+      - ./../../app/administrator:/HFBapp
       - ./../../connection-profile:/connection-profile
       - ./../../crypto-material:/crypto-material
       - ./../../chaincode:/chaincode

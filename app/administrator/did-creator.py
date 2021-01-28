@@ -2,6 +2,9 @@ import sys
 from hfbssisdk.src.hfbssi.payload import payloadgen
 from hfbssisdk.src.hfbssi.did import generateDIDadmin
 from hfbssisdk.src.hfbssi.did import generateDIDentity
+from hfbssisdk.src.hfbssi.controller import queryController
+from hfbssisdk.src.hfbssi.controller import createController
+from hfbssisdk.src.hfbssi.verifySignature import verifySignature
 
 # did created for administrator
 pathwallet = '/home/santiago/ModbusSSIHFB/app/administrator/wallet.json'
@@ -22,8 +25,31 @@ pathpubKey = '/home/santiago/ModbusSSIHFB/crypto-material/config_solo/crypto-con
 generateDIDentity(pathwallet, pathpubKey, pathprivKey)
 
 path_priv_key = '/home/santiago/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk'
-did_wallet_path = ''
-did, signature = payloadgen(path_priv_key, did_wallet_path)
-print(did)
-print(signature)
-# createController(net_profile, organization, user, channel, peer, chaincode, function, did, signature)
+did_wallet_path = '/home/santiago/ModbusSSIHFB/app/administrator/walletDid.json'
+did, payload = payloadgen(path_priv_key, did_wallet_path)
+
+
+net_profile = '../../connection-profile/2org_2peer_solo/network.json'
+organization = 'org1.example.com'
+user = 'Admin'
+channel = 'modbuschannel'
+peer = 'peer0.org1.example.com'
+chaincode = 'proxy_cc'
+function = 'setController'
+createController(net_profile, organization, user, channel,
+                 peer, chaincode, function, did, payload)
+
+net_profile = '../../connection-profile/2org_2peer_solo/network.json'
+organization = 'org1.example.com'
+user = 'Admin'
+channel = 'modbuschannel'
+peer = 'peer0.org1.example.com'
+chaincode = 'proxy_cc'
+function = 'getController'
+pubKey = queryController(net_profile, organization, user, channel,
+                         peer, chaincode, function, did)
+
+
+pathwallet = '/home/santiago/ModbusSSIHFB/app/modbus-sync-server/wallet.json'
+reponse = verifySignature(pubKey, pathwallet)
+print(reponse)

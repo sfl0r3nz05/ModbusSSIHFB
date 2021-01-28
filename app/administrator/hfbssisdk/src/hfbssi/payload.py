@@ -13,20 +13,39 @@ from cryptography.hazmat.primitives.serialization import (
 
 
 def payloadgen(path_priv_key, did_wallet_path):
-    with open(key_wallet_path) as wallet_file:
-        data = json.load(wallet_file)
-        temp_key = data['keys']
-        PRIVATE_KEY = temp_key[0].get('privKey')
-        PRIVATE_KEY_ENC = bytes(PRIVATE_KEY.encode('utf-8'))
-        print(PRIVATE_KEY_ENC)
-        # RSA_SERIALIZATION = codecs.decode(
-        #    PRIVATE_KEY_ENC, encoding='utf-8', errors='strict')
-        RSA_SERIALIZATION = serialization.load_pem_private_key(
-            PRIVATE_KEY_ENC, password=None, backend=default_backend())
+
+    with open(path_priv_key, 'r') as ec_priv_file:
+        priv_eckey = load_pem_private_key(force_bytes(
+            ec_priv_file.read()), password=None, backend=default_backend())
 
     with open(did_wallet_path) as did_file:
         data = json.load(did_file)
         temp_did = data['dids']
         message = temp_did[0]
 
-    return temp_did.did, signature
+        if message.get('controller'):
+            # to convert dictionary into string using json.dumps() https://www.geeksforgeeks.org/python-convert-dictionary-object-into-string/
+            dataToStr = json.dumps(message)
+
+            # Use client/server DID as message to be signed
+            dataToSign = str.encode(dataToStr)
+
+            # signing message https://github.com/pyca/cryptography/blob/master/docs/hazmat/primitives/asymmetric/ec.rst
+            signature_coded = priv_eckey.sign(
+                dataToSign, ec.ECDSA(hashes.SHA256()))
+
+            #signature = signature_coded.decode("utf-8")
+            signature = signature_coded.decode(
+                'unicode_escape').encode('utf-8')
+
+            return message.get('did'), signature
+
+        else:
+            public_key = priv_eckey.public_key()
+            pem = public_key.public_bytes(
+                encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
+            # pem.splitlines()[1] //To access to different segments of the pem
+            # loaded_public_key = serialization.load_pem_public_key(
+            #    pem, backend=default_backend())
+
+            return message.get('did'), pem

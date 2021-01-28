@@ -13,6 +13,12 @@ type Identity struct {
 	Controller string `json:"controller"` // issuer's DID
 }
 
+// Identity stored in bc
+type Controller struct {
+	Did       string `json:"did,omitempty"`
+	PublicKey string `json:"publicKey,omitempty"`
+}
+
 // IdentityRequest to serialize args
 type IdentityRequest struct {
 	Did        string `json:"did"`

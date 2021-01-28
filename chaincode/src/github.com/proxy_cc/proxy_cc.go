@@ -46,8 +46,12 @@ func (t *Chaincode) Invoke(stub shim.ChaincodeStubInterface) sc .Response {
 		return t.setIdRegistry(stub, args)
 	} else if function == "getIdRegistry" {
 		return t.getIdRegistry(stub, args)
+	} else if function == "setController" {
+		return t.setController(stub, args)
+	} else if function == "getController" {
+		return t.getController(stub, args)
 	}
-	return shim.Error("Invalid invoke function name. Expecting \"setIDRegistry\" \"getIDRegistry\"")
+	return shim.Error("Invalid invoke function name. Expecting \"setIDRegistry\" \"getIDRegistry\" \"setController\" \"getController\"")
 }
 
 func (t *Chaincode) setIdRegistry(stub shim.ChaincodeStubInterface, args []string) sc .Response {
@@ -78,6 +82,56 @@ func (t *Chaincode) setIdRegistry(stub shim.ChaincodeStubInterface, args []strin
 }
 
 func (t *Chaincode) getIdRegistry(stub shim.ChaincodeStubInterface, args []string) sc .Response {
+	var did string
+	var err error
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting name of the person to getIdRegistry")
+	}
+
+	did = args[0]
+
+	didBytes, err := stub.GetState(did)
+
+	if err != nil {
+		jsonResp := "{\"Error\":\"Failed to get state for " + did + "\"}"
+		return shim.Error(jsonResp)
+	}
+	if didBytes == nil {
+		jsonResp := "{\"Error\":\"Nil amount for " + did + "\"}"
+		return shim.Error(jsonResp)
+	}
+	jsonResp := "{\"Name\":\"" + did + "\",\"Amount\":\"" + string(didBytes) + "\"}"
+	fmt.Printf("getIdRegistry Response:%s\n", jsonResp)
+
+	return shim.Success(didBytes)
+}
+
+func (t *Chaincode) setController(stub shim.ChaincodeStubInterface, args []string) sc .Response {
+	var err error
+	var did string
+	var publicKey string
+	var controller Controller
+
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+
+	did = args[0]
+	publicKey = args[1]
+	
+	controller.PublicKey = publicKey
+	jsonAsBytes, _ := json.Marshal(controller) //marshal a marbles index struct with emtpy array of strings to clear the index
+
+	// Write the state to the ledger
+	err = stub.PutState(did, jsonAsBytes)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(nil)
+}
+
+func (t *Chaincode) getController(stub shim.ChaincodeStubInterface, args []string) sc .Response {
 	var did string
 	var err error
 

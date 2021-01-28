@@ -51,27 +51,13 @@ gopath = os.path.normpath(os.path.join(
     '../chaincode'
 ))
 os.environ['GOPATH'] = os.path.abspath(gopath)
-args = ["did:vtn:trustos:trienekens:0"]
+args = ["did:vtn:trustid:d7104427989de1fa5729c68f8cb767bb0740ecd65b3b080e9a725a04297f9641"]
 response = loop.run_until_complete(cli.chaincode_query(
     requestor=org1_admin,
     channel_name='modbuschannel',
     peers=['peer0.org1.example.com'],
     args=args,
     cc_name='proxy_cc',
-    fcn='getIdRegistry',
+    fcn='getController',
 ))
-print("response", response)
-
-
-# Query a chaincode, [a]
-args = ["client"]
-# The response should be true if succeed
-response = loop.run_until_complete(cli.chaincode_query(
-    requestor=org1_admin,
-    channel_name='modbuschannel',
-    peers=['peer0.org1.example.com'],
-    args=args,
-    cc_name='registration_cc_v2'
-))
-
 print("response", response)

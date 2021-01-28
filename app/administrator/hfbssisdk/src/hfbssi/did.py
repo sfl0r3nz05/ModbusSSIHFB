@@ -28,8 +28,8 @@ def generateDIDadmin(wallet, walletDid, pathkey):
     # Global variable to store public key and send to generateDIDadmin method
     global EC_SERIALIZATION
 
-    # Generate admin private key    https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa.html#generation
-    with open('/home/santiago/ModbusSSIHFB/app/administrator/key.pem', 'r') as ec_priv_file:
+    # Load admin private key https://github.com/pyca/cryptography/blob/master/docs/hazmat/primitives/asymmetric/ec.rst
+    with open(pathkey, 'r') as ec_priv_file:
         priv_eckey = load_pem_private_key(force_bytes(
             ec_priv_file.read()), password=None, backend=default_backend())
 
@@ -123,12 +123,11 @@ def generateDIDentity(wallet, pathpubKey, pathprivKey):
         message = did.encode('utf-8')
 
         # signed message https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa.html#signing
-        # signature = EC_SERIALIZATION.sign(message, padding.PSS(mgf=padding.MGF1(
-        #    hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH), hashes.SHA256())
         signature = EC_SERIALIZATION.sign(message, ec.ECDSA(hashes.SHA256()))
 
         # Parsing data type from bytes to hex
-        signature_coded = codecs.encode(signature, 'hex_codec')
+        signature_coded = codecs.encode(
+            signature, encoding='hex_codec', errors='strict')
 
         # Object creation
         y = {
@@ -145,3 +144,23 @@ def generateDIDentity(wallet, pathpubKey, pathprivKey):
     # Object added to Json file
     with open(wallet, 'w') as wallet_file:
         json.dump(data, wallet_file, indent=4)
+
+
+# {
+#  "@context": "https://www.w3.org/ns/did/v1",
+#  "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e",
+#  "authentication": [{
+#    "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1",
+#    "type": "Ed25519VerificationKey2018",
+#    "controller": "did:vtn:trustid:d7104427989de1fa5729c68f8cb767bb0740ecd65b3b080e9a725a04297f9641",
+#    "publicKeyBase58": "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+#  }],
+#  "service": [{
+#    "id":"did:example:123456789abcdefghi#vcs",
+#    "type": "VerifiableCredentialService",
+#    "serviceEndpoint": "mbaps://ipaddress:port",
+#    "functionCode":"",
+#    "startingAddress":"",
+#    "offset":"",
+#  }]
+# }

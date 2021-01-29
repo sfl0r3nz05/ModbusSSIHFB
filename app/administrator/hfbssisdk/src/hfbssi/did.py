@@ -3,6 +3,10 @@ import json
 import codecs
 import hashlib
 from cryptography.hazmat.primitives import hashes
+from hfbssisdk.src.hfbssi.diddocclient import didDocClient
+from hfbssisdk.src.hfbssi.diddocserver import didDocServer
+from hfbssisdk.src.hfbssi.diddocclient import didDocClientSigned
+from hfbssisdk.src.hfbssi.diddocserver import didDocServerSigned
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -11,22 +15,28 @@ from jwt.utils import base64url_decode, force_bytes, force_unicode
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key, load_pem_public_key, load_ssh_public_key)
 
-GLOBAL_DID = 0
-GLOBAL_PRIV = bytearray()
+GLOBAL_PAYLOAD = 0
+GLOBAL_DID_ENTITY = 0
 GLOBAL_PUB = bytearray()
+GLOBAL_PRIV = bytearray()
+GLOBAL_DID_CONTROLLER = 0
 EC_SERIALIZATION = bytearray()
 
 
 # function to administrator issues DID identifier to it self
 def generateDIDadmin(wallet, walletDid, pathkey):
     # Global variable to store DID and send to generateDIDadmin method
-    global GLOBAL_DID
+    global GLOBAL_DID_CONTROLLER
     # Global variable to store private key and send to generateDIDadmin method
     global GLOBAL_PRIV
     # Global variable to store public key and send to generateDIDadmin method
     global GLOBAL_PUB
     # Global variable to store public key and send to generateDIDadmin method
     global EC_SERIALIZATION
+    # Global variable to store DID of client/server
+    global GLOBAL_DID_ENTITY
+    # Global variable to store payload
+    global GLOBAL_PAYLOAD
 
     # Load admin private key https://github.com/pyca/cryptography/blob/master/docs/hazmat/primitives/asymmetric/ec.rst
     with open(pathkey, 'r') as ec_priv_file:
@@ -57,7 +67,7 @@ def generateDIDadmin(wallet, walletDid, pathkey):
             )
 
     # GLOBAL variable to send administrator DID to generateDIDadmin method
-    GLOBAL_DID = did_controller
+    GLOBAL_DID_CONTROLLER = did_controller
 
     # Writing the keys on the wallet #####################################
     with open(wallet) as wallet_file:
@@ -84,7 +94,7 @@ def generateDIDadmin(wallet, walletDid, pathkey):
 
         x = {
             # DID retrieved from GLOBAL variable
-            "did": GLOBAL_DID,
+            "did": GLOBAL_DID_CONTROLLER,
             # GLOBAL variable decoded before sending to wallet
             "pubKey": GLOBAL_PUB.decode('utf-8'),
         }
@@ -97,7 +107,7 @@ def generateDIDadmin(wallet, walletDid, pathkey):
 
 
 # function to administrator issues DID identifier to both client and server
-def generateDIDentity(wallet, pathpubKey, pathprivKey):
+def generateDIDentity(wallet, pathpubKey, pathprivKey, server, port, fnc, address, offset):
 
     # Open wallet
     with open(wallet) as wallet_file:
@@ -115,12 +125,12 @@ def generateDIDentity(wallet, pathpubKey, pathprivKey):
             pubKey = pubKey.replace('\n', '')
 
         # Create DID identifier
-        did = "did:vtn:trustid:" + \
+        GLOBAL_DID_ENTITY = "did:vtn:trustid:" + \
             str(hashlib.sha256(pubKey.encode('utf-8')).hexdigest()
                 )
 
         # Use client/server DID as message to be signed
-        message = did.encode('utf-8')
+        message = GLOBAL_DID_ENTITY.encode('utf-8')
 
         # signed message https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa.html#signing
         signature = EC_SERIALIZATION.sign(message, ec.ECDSA(hashes.SHA256()))
@@ -131,8 +141,8 @@ def generateDIDentity(wallet, pathpubKey, pathprivKey):
 
         # Object creation
         y = {
-            "did": did,
-            "controller": GLOBAL_DID,
+            "did": GLOBAL_DID_ENTITY,
+            "controller": GLOBAL_DID_CONTROLLER,
             "pubKey": pubKey,
             "privKey": privKey,
             "signature": signature_coded.decode('utf-8'),
@@ -141,26 +151,60 @@ def generateDIDentity(wallet, pathpubKey, pathprivKey):
         # Object added
         temp.append(y)
 
-    # Object added to Json file
+        if server:
+            diddocserver = didDocServer(GLOBAL_DID_ENTITY, pubKey.encode('utf-8'), GLOBAL_DID_CONTROLLER,
+                                        port, fnc, address, offset)
+
+            # Use server diddoc as message to be signed
+            message = (str(diddocserver)).encode('utf-8')
+
+            # signed message https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa.html#signing
+            signatureserver = EC_SERIALIZATION.sign(
+                message, ec.ECDSA(hashes.SHA256()))
+
+            diddocserversigned = didDocServerSigned(
+                diddocserver, signatureserver)
+
+            codedPayload = (str(diddocserversigned)).encode('utf-8')
+
+            signedPlayload = EC_SERIALIZATION.sign(
+                codedPayload, ec.ECDSA(hashes.SHA256()))
+
+            # Parsing data type from bytes to hex
+            signature_coded = codecs.encode(
+                signedPlayload, encoding='hex_codec', errors='strict')
+
+            # Parsing data type from bytes to hex
+            GLOBAL_PAYLOAD = signature_coded.decode('utf-8')
+
+        else:
+            diddocclient = didDocClient(
+                GLOBAL_DID_ENTITY, pubKey.encode('utf-8'), GLOBAL_DID_CONTROLLER)
+
+            # Use client diddoc as message to be signed
+            message = (str(diddocclient)).encode('utf-8')
+
+            # signed message https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa.html#signing
+            signatureclient = EC_SERIALIZATION.sign(
+                message, ec.ECDSA(hashes.SHA256()))
+
+            diddocclientsigned = didDocClientSigned(
+                diddocclient, signatureclient)
+
+            codedPayload = (str(diddocclientsigned)).encode('utf-8')
+
+            signedPlayload = EC_SERIALIZATION.sign(
+                codedPayload, ec.ECDSA(hashes.SHA256()))
+
+            # Parsing data type from bytes to hex
+            signature_coded = codecs.encode(
+                signedPlayload, encoding='hex_codec', errors='strict')
+
+            # Parsing data type from bytes to hex
+            GLOBAL_PAYLOAD = signature_coded.decode('utf-8')
+
+        # Object added to Json file
     with open(wallet, 'w') as wallet_file:
         json.dump(data, wallet_file, indent=4)
 
-
-# {
-#  "@context": "https://www.w3.org/ns/did/v1",
-#  "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e",
-#  "authentication": [{
-#    "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1",
-#    "type": "Ed25519VerificationKey2018",
-#    "controller": "did:vtn:trustid:d7104427989de1fa5729c68f8cb767bb0740ecd65b3b080e9a725a04297f9641",
-#    "publicKeyBase58": "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
-#  }],
-#  "service": [{
-#    "id":"did:example:123456789abcdefghi#vcs",
-#    "type": "VerifiableCredentialService",
-#    "serviceEndpoint": "mbaps://ipaddress:port",
-#    "functionCode":"",
-#    "startingAddress":"",
-#    "offset":"",
-#  }]
-# }
+    return GLOBAL_DID_ENTITY, GLOBAL_DID_CONTROLLER, GLOBAL_PUB.decode('utf-8'), GLOBAL_PAYLOAD

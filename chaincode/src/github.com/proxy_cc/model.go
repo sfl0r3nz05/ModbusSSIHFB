@@ -1,14 +1,8 @@
 package main
 
-// Request to serialize args
-type Request struct {
-	Did       string `json:"did,omitempty"`
-	PublicKey string `json:"publicKey,omitempty"`
-	Payload   string `json:"payload,omitempty"` // me pasa una firma // el controller lo meto yo
-}
-
 // Identity stored in bc
 type Identity struct {
+	Did 	   string `json:"did,omitempty"`
 	PublicKey  string `json:"publicKey"`
 	Controller string `json:"controller"` // issuer's DID
 }
@@ -20,12 +14,19 @@ type Controller struct {
 }
 
 // IdentityRequest to serialize args
-type IdentityRequest struct {
+type DidDoc struct {
 	Did        string `json:"did"`
 	Controller string `json:"controller,omitempty"`
 	PublicKey  string `json:"publicKey"`
 	Payload    string `json:"payload,omitempty"` // me pasa una firma // el controller lo meto yo
 	Access     int    `json:"access,omitempty"`
+}
+
+// Request to serialize args
+type Request struct {
+	Did       string `json:"did,omitempty"`
+	PublicKey string `json:"publicKey,omitempty"`
+	Payload   string `json:"payload,omitempty"` // me pasa una firma // el controller lo meto yo
 }
 
 // Service stored in bc

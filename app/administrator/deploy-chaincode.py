@@ -78,7 +78,7 @@ response = loop.run_until_complete(cli.chaincode_query(
     peers=['peer0.org1.example.com'],
     args=args,
     cc_name='proxy_cc',
-    fcn='getIdRegistry',
+    fcn='entityGet',
 ))
 
 # Query a chaincode
@@ -90,5 +90,5 @@ response = loop.run_until_complete(cli.chaincode_query(
     peers=['peer0.org2.example.com'],
     args=args,
     cc_name='proxy_cc',
-    fcn='getIdRegistry',
+    fcn='entityGet',
 ))

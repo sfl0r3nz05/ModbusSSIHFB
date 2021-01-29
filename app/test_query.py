@@ -50,14 +50,24 @@ gopath = os.path.normpath(os.path.join(
     os.path.dirname(os.path.realpath('__file__')),
     '../chaincode'
 ))
+#os.environ['GOPATH'] = os.path.abspath(gopath)
+#args = ["did:vtn:trustos:trienekens:0"]
+# response = loop.run_until_complete(cli.chaincode_query(
+#    requestor=org1_admin,
+#    channel_name='modbuschannel',
+#    peers=['peer0.org1.example.com'],
+#    args=args,
+#    cc_name='proxy_cc',
+#    fcn='entityGet',
+# ))
 os.environ['GOPATH'] = os.path.abspath(gopath)
-args = ["did:vtn:trustid:d7104427989de1fa5729c68f8cb767bb0740ecd65b3b080e9a725a04297f9641"]
+args = ["did:vtn:trustid:beaf4dafac54331621dd6c685248f9e26ee45703a697f571b4d34562bd7c73fb"]
 response = loop.run_until_complete(cli.chaincode_query(
     requestor=org1_admin,
     channel_name='modbuschannel',
     peers=['peer0.org1.example.com'],
     args=args,
     cc_name='proxy_cc',
-    fcn='getController',
+    fcn='entityGet',
 ))
 print("response", response)

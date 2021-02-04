@@ -2,10 +2,6 @@ import os
 import asyncio
 from hfc.fabric import Client
 
-did = ""
-controller = ""
-publicKey = ""
-
 loop = asyncio.get_event_loop()
 
 cli = Client(net_profile="../connection-profile/2org_2peer_solo/network.json")
@@ -30,8 +26,8 @@ print("gopath", gopath)
 responses = loop.run_until_complete(cli.chaincode_install(
     requestor=org1_admin,
     peers=['peer0.org1.example.com'],
-    cc_path='github.com/ssi_cc',
-    cc_name='ssi_cc',
+    cc_path='github.com/proxy_cc',
+    cc_name='proxy_cc',
     cc_version='v1.0'
 ))
 
@@ -39,13 +35,13 @@ responses = loop.run_until_complete(cli.chaincode_install(
 responses = loop.run_until_complete(cli.chaincode_install(
     requestor=org2_admin,
     peers=['peer0.org2.example.com'],
-    cc_path='github.com/ssi_cc',
-    cc_name='ssi_cc',
+    cc_path='github.com/proxy_cc',
+    cc_name='proxy_cc',
     cc_version='v1.0'
 ))
 
 # Instantiate Chaincode in Channel, the response should be true if succeed
-args = ["{\"did\":\"did:vtn:trustid:29222201b6662e5b2a07815f7f98b8653b306e3af3830dbaf2387da49ec744db\",\"controller\":\"did:vtn:trustid:29222201b6662e5b2a07815f7f98b8653b306e3af3830dbaf2387da49ec744db\",\"publicKey\":\"-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzP4bEUzWUJQh+gm9apHT6H1myWMqje4I3+F0d4NSPV8Y3HG0mOYr034fx34je9F82+YpToOO5utbQFlDTmCcI3S2hO4oNwV4xuvt+DCMm2QsYOPCy8BjMHFHiOxTVzlDNaq9YVrGeiEY6+e5e5c61y+Yi5YeaRld0RLBWkIfaQIAQyx/FgYFpzDDhxB/TznO9hiw5O5/MFqVOKFEhjT3ndXPRuHUi1F5BfidzlKzfU8G9LO4M+VLzRwnsWGsrgdyQwK8SG9RhcYwPBKMqxwdyUwwccX3DEovshPMxEdPGaj1zuJuAuJlcd504FZDSqszcTjbdSGUgivVWMv8HvRIoQIDAQAB-----END PUBLIC KEY-----\"}"]
+args = ["did:vtn:trustos:company:0", "did:vtn:trustos:company:0", "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7NBDzVMESXU/yuARe7YUGrkgNMZh5eA5w3PgxgYZf/isDLPHvmSM2Q9cTauDroriGInikQxtZ/CI4+9Qi4RdJCHjeWhzw0hTIXhHoohyo9QTbUVetb4RBDJEcNqFrpztAojn8Ib5EF2soBFtBLyTguxlizcWwTZvv+KxHGBg/tUE7JIqw3YzmEK31faR2HhkPPqxTQ9F+h4SOnY9e6Cfh75PpjouzarpntSVkAqv/Ot5kV3O4TcWhB0vUr/HZwx2iX+LEyYock8Sx4Op20/g7k3J3rYhMGTHfkKMhZjX9QoZ8uBRiSxieAaia0yZSIcycgE6Aqu6KT+WaQn4bCnhnwQIDAQAB-----END PUBLIC KEY-----"]
 
 # policy, see https://hyperledger-fabric.readthedocs.io/en/release-1.4/endorsement-policies.html
 policy = {
@@ -63,7 +59,7 @@ response = loop.run_until_complete(cli.chaincode_instantiate(
     channel_name='modbuschannel',
     peers=['peer0.org1.example.com'],
     args=args,
-    cc_name='ssi_cc',
+    cc_name='proxy_cc',
     cc_version='v1.0',
     # cc_endorsement_policy=policy,  # optional, but recommended
     collections_config=None,  # optional, for private data policy
@@ -74,13 +70,25 @@ response = loop.run_until_complete(cli.chaincode_instantiate(
 print("response", response)
 
 # Query a chaincode, [a]
-args = ["did:vtn:trustid:29222201b6662e5b2a07815f7f98b8653b306e3af3830dbaf2387da49ec744db"]
+args = ["did:vtn:trustos:company:0"]
 # The response should be true if succeed
 response = loop.run_until_complete(cli.chaincode_query(
     requestor=org1_admin,
     channel_name='modbuschannel',
+    peers=['peer0.org1.example.com'],
+    args=args,
+    cc_name='proxy_cc',
+    fcn='entityGet',
+))
+
+# Query a chaincode
+args = ["did:vtn:trustos:company:0"]
+# The response should be true if succeed
+response = loop.run_until_complete(cli.chaincode_query(
+    requestor=org2_admin,
+    channel_name='modbuschannel',
     peers=['peer0.org2.example.com'],
     args=args,
-    cc_name='ssi_cc',
-    fcn='query',
+    cc_name='proxy_cc',
+    fcn='entityGet',
 ))

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"encoding/json"
-
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc  "github.com/hyperledger/fabric/protos/peer"
 )

@@ -67,17 +67,19 @@ os.environ['GOPATH'] = os.path.abspath(gopath)
 #    fcn='entityRegister',
 # ))
 
-args = ["did:vtn:trustos:trienekens:0", "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7NBDzVMESXU/yuARe7YU\nGrkgNMZh5eA5w3PgxgYZf/isDLPHvmSM2Q9cTauDroriGInikQxtZ/CI4+9Qi4Rd\nJCHjeWhzw0hTIXhHoohyo9QTbUVetb4RBDJEcNqFrpztAojn8Ib5EF2soBFtBLyT\nguxlizcWwTZvv+KxHGBg/tUE7JIqw3YzmEK31faR2HhkPPqxTQ9F+h4SOnY9e6Cf\nh75PpjouzarpntSVkAqv/Ot5kV3O4TcWhB0vUr/HZwx2iX+LEyYock8Sx4Op20/g\n7k3J3rYhMGTHfkKMhZjX9QoZ8uBRiSxieAaia0yZSIcycgE6Aqu6KT+WaQn4bCnh\nwQIDAQAB\n-----END PUBLIC KEY-----"]
+args = ["{\"did\":\"did:vtn:trustos:company:0\",\"payload\":\"eyJhbGdvcml0aG0iOiJQUzI1NiIsImFsZyI6IlBTMjU2In0.eyJmdW5jdGlvbiI6ImNyZWF0ZVNlbGZJZGVudGl0eSIsInBhcmFtcyI6eyJkaWQiOiJkaWQ6dnRuOnRydXN0b3M6dGVsZWZvbmljYToyIiwicHVibGljS2V5IjoiLS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS1cbk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBdTA0ZTlWTE5uMUpIZ1lOSU1SclVcblE0SkhoSG4wd1p4UENEOWtjUHo2M1NNQmlZbkN0Uk0yNHBLODZnQWFUdU00RDhWMkxqckE2ZHZCV3dCT2YydUZcbi80aXJJUlhNT2FJNTh1dFhFQ3NBMHI2Q3cyU3BDWVNWOEJLMXk4aHBuc3cwMi9UMHhZUkRiRnFmaHZxYQ\"}"]
 response = loop.run_until_complete(cli.chaincode_invoke(
     requestor=org1_admin,
     channel_name='modbuschannel',
     peers=['peer0.org1.example.com'],
     args=args,
-    cc_name='proxy_cc',
+    cc_name='ssi_cc',
     transient_map=None,  # optional, for private data
     wait_for_event=True,
-    fcn='controllerRegister',
+    fcn='proxy',
 ))
+
+print (response)
 
 #name = '192.168.127.41'
 #arg2 = base64.b64encode(hashlib.sha256(name.encode('utf-8')).digest())

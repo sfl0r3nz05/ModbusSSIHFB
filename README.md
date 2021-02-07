@@ -7,91 +7,10 @@
 
 ## CASE SOLO WITH GOLEVELDB
 
-1. Generate cryptographic material
+1. Crypto package
 
-   - cd crypto-material/config_solo
-   - ./generate.sh
+   sudo cp -rf /home/ubuntu/go/src/golang.org /var/lib/docker/overlay2/5eb7186e78e0e9e4a6ee957f414144e5d40349e04aaf7fb75f59c65b4a9e0628/diff/opt/gopath/src
 
-2. Deploy HFB network
+2. gopkg.in package
 
-   - cd networks/2org1peergoleveldb_solo
-   - docker-compose up -d
-
-## CASE SOLO WITH COUCHDB
-
-1. Generate cryptographic material
-
-   - cd crypto-material/config_solo
-   - ./generate.sh
-
-2. Deploy HFB network
-
-   - cd networks/2org1peercouchdb_solo
-   - docker-compose up -d
-
-## CASE RAFT WITH GOLEVELDB
-
-1. Generate cryptographic material
-
-   - cd crypto-material/config_raft
-   - ./generate.sh
-
-2. Deploy HFB network
-
-   - cd networks/2org1peergoleveldb_raft
-   - docker-compose up -d
-
-## CASE KAFKA WITH GOLEVELDB
-
-1. Generate cryptographic material
-
-   - cd crypto-material/config_kafka
-   - ./generate.sh
-
-2. Deploy HFB network
-
-   - cd networks/2org1peergoleveldb_kafka
-   - docker-compose up -d
-
-## CASE SOLO 2ORG WITH GOLEVELDB
-
-1. Set-up environmental variables, adding to PATH, binary configtxgen:
-
-   - e.g.: cp -r configtxgen /usr/bin/local
-
-2. Deploy HFB network
-
-   - cd networks/2org_2peer_solo_goleveldb
-   - docker-compose up -d
-
-3. Join Peers to Channel
-
-   - cd app
-   - python3 channel-join.py
-
-4. Instale chaincode/Instantiate chaincode
-
-   - cd app
-   - python3 deploy-chaincode.py
-
-5. Invoke transactions
-
-   - cd app
-   - python3 invoke.py
-
-6. Query transactions
-
-   - cd app
-   - python3 query.py
-
----
-
-| chaincode          | channel-join | deploy-chaincode | invoke | query  |
-| ------------------ | ------------ | ---------------- | ------ | ------ |
-| example_cc         | v1           | v1               | v1     | v1     |
-| ------------------ | ------------ | ---------------- | ------ | ------ |
-| registration_cc_v1 | v2           | v2               | v2     | v2     |
-| ------------------ | ------------ | ---------------- | ------ | ------ |
-| registration_cc_v2 | v3           | v3               | v3     | v3     |
-
----
+   sudo cp -rf /home/ubuntu/go/src/gopkg.in /var/lib/docker/overlay2/5eb7186e78e0e9e4a6ee957f414144e5d40349e04aaf7fb75f59c65b4a9e0628/diff/opt/gopath/src

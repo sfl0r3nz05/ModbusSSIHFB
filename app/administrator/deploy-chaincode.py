@@ -45,7 +45,7 @@ responses = loop.run_until_complete(cli.chaincode_install(
 ))
 
 # Instantiate Chaincode in Channel, the response should be true if succeed
-args = ["{\"did\":\"did:vtn:trustos:company:0\",\"controller\":\"did:vtn:trustos:company:0\",\"publicKey\":\"-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7NBDzVMESXU/yuARe7YUGrkgNMZh5eA5w3PgxgYZf/isDLPHvmSM2Q9cTauDroriGInikQxtZ/CI4+9Qi4RdJCHjeWhzw0hTIXhHoohyo9QTbUVetb4RBDJEcNqFrpztAojn8Ib5EF2soBFtBLyTguxlizcWwTZvv+KxHGBg/tUE7JIqw3YzmEK31faR2HhkPPqxTQ9F+h4SOnY9e6Cfh75PpjouzarpntSVkAqv/Ot5kV3O4TcWhB0vUr/HZwx2iX+LEyYock8Sx4Op20/g7k3J3rYhMGTHfkKMhZjX9QoZ8uBRiSxieAaia0yZSIcycgE6Aqu6KT+WaQn4bCnhwQIDAQAB-----END PUBLIC KEY-----\"}"]
+args = ["{\"did\":\"did:vtn:trustos:company:2\",\"controller\":\"did:vtn:trustos:company:2\",\"publicKey\":\"-----BEGIN CERTIFICATE-----MIICCzCCAbGgAwIBAgIRALhcU1DFX/K+nViClI642AUwCgYIKoZIzj0EAwIwaTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGcmFuY2lzY28xFDASBgNVBAoTC2V4YW1wbGUuY29tMRcwFQYDVQQDEw5jYS5leGFtcGxlLmNvbTAeFw0xODEwMTkwMzQ4MDBaFw0yODEwMTYwMzQ4MDBaMFYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TYW4gRnJhbmNpc2NvMRowGAYDVQQDDBFBZG1pbkBleGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKXC2RML2KvKW+JjtyduhrVrhXwXhkovXGxj47d7drgzBVaIZ6WSLh+BhOfuu3EkFjbZwmvNA4q16yB4z6JINfyjTTBLMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAMCsGA1UdIwQkMCKAIKqMjopgkubD52pdJAsdXKAKEjZ5r2XH98+Q2aA87rHJMAoGCCqGSM49BAMCA0gAMEUCIQClGgn8kmm97E8ZJTAgaI0A2gh4h13N6/3ysp31ezb7vAIgVjwbnsuQRDq+udoGrNMm163oQqU6VIYnUZZGzuUWh5w=-----END CERTIFICATE-----\"}"]
 
 # policy, see https://hyperledger-fabric.readthedocs.io/en/release-1.4/endorsement-policies.html
 policy = {

@@ -1,34 +1,28 @@
 package main
-
  
 import (
 	"errors"
     "strings"
-    "crypto/x509"
-    "encoding/json"
-    "encoding/base64"
+	"crypto/x509"
+	"encoding/pem"
+	"encoding/json"
     log "github.com/log"
     jose "gopkg.in/square/go-jose.v2"
 )
 
-func parseKey(publicKey string) string {
-
-	begin := "-----BEGIN PUBLIC KEY-----"
-	end := "-----END PUBLIC KEY-----"
-
-	noBegin := strings.Split(publicKey, begin)
-	parsed := strings.Split(noBegin[1], end)
-	return parsed[0]
-}
-
 func checkSignature(payload string, key string) (map[string]interface{}, error) {
-	log.Errorf("[%s][%s][checkSignature] Verifying signature", CHANNEL_ENV, IDGATEWAY)
+	object, err := parseMessage(payload)
+	
+	pbkey, err := parsePublicKeyX509(key)
+	log.Infof("[%s][%s][verifySignature] Get key parsed %s", CHANNEL_ENV, IDREGISTRY, pbkey)
+	
+	message, err := jose.JSONWebSignature.Verify(*object, pbkey)
 
-	message, err := verifySignature(payload, key)
 	if err != nil {
-		log.Errorf("[%s][%s][checkSignature] Error verifying signature: %v", CHANNEL_ENV, IDGATEWAY, err.Error())
-		return nil, errors.New(ERRORVerSign)
+		log.Infof("[%s][%s][verifySignature] Error verifying signature %s", CHANNEL_ENV, JoseUTIL, err.Error())
+		return nil, errors.New(ERRORVerifying)
 	}
+
 	params := make(map[string]interface{})
 
 	err = json.Unmarshal(message, &params)
@@ -39,15 +33,13 @@ func checkSignature(payload string, key string) (map[string]interface{}, error) 
 	return params, nil
 }
 
-func verifySignature(message string, key string) ([]byte, error) {
-	msg, err := parseMessage(message)
-	pbkey, err := parsePublicKeyX509(key)
-	result, err := jose.JSONWebSignature.Verify(*msg, pbkey)
-	if err != nil {
-		log.Infof("[%s][%s][verifySignature] Error verifying signature %s", CHANNEL_ENV, JoseUTIL, err.Error())
-		return nil, errors.New(ERRORVerifying)
-	}
-	return result, nil
+func parseKey(publicKey string) string {
+	begin := "-----BEGIN CERTIFICATE-----"
+	end := "-----END CERTIFICATE-----"
+
+	noBegin := strings.Split(publicKey, begin)
+	parsed := strings.Split(noBegin[1], end)
+	return parsed[0]
 }
 
 func parseMessage(message string) (*jose.JSONWebSignature, error) {
@@ -60,20 +52,22 @@ func parseMessage(message string) (*jose.JSONWebSignature, error) {
 }
 
 func parsePublicKeyX509(publicKey string) (interface{}, error) {
-	base64Data := []byte(publicKey)
+	log.Infof("[%s][%s][parseMessage] publicKey %s", CHANNEL_ENV, JoseUTIL, publicKey)
 
-	d := make([]byte, base64.StdEncoding.DecodedLen(len(base64Data)))
-	n, err := base64.StdEncoding.Decode(d, base64Data)
-	if err != nil {
-		log.Infof("[%s][%s][parsePublicKeyX509] Error decoding into base64 %s", CHANNEL_ENV, JoseUTIL, err.Error())
-		return nil, errors.New(ERRORBase64)
+	block, _ := pem.Decode([]byte(publicKey))
+	log.Infof("[%s][%s][parseMessage] publicKey2 %s", CHANNEL_ENV, JoseUTIL, block)
+
+	if block == nil {
+		panic("failed to parse PEM block containing the public key")
 	}
-	d = d[:n]
 
-	publicKeyImported, err := x509.ParsePKIXPublicKey(d)
+	publicKeyImported, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
 		log.Infof("[%s][%s][parsePublicKeyX509] Error parsing into X509 %s", CHANNEL_ENV, JoseUTIL, err.Error())
 		return nil, errors.New(ERRORParseX509)
 	}
+
+	log.Infof("[%s][%s][parseMessage] Conocer el valor de publicKeyImported %s", CHANNEL_ENV, JoseUTIL, publicKeyImported)
+
 	return publicKeyImported, nil
 }

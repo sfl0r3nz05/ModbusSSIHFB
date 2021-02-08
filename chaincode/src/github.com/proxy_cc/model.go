@@ -122,6 +122,7 @@ const (
 	ERRORParseX509        = `Error parsing into X509`
 	ERRORBase64           = `Error decoding into base64`
 	ERRORVerifying        = `Error verifying signature `
+	IDCONTROLLER          = `ID Controller`
 	IDGATEWAY             = `ID Gateway`
 	IDREGISTRY            = `ID Registry`
 	ServiceGATEWAY        = `ID Service Gateway`

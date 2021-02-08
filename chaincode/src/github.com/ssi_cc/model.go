@@ -108,7 +108,10 @@ const (
 	ERRORGetService       = `Error getting service`
 	ERRORUpdService       = `Error updating service`
 	ERRORServiceNotExists = `Error The service doesn't exist`
-	ERRORCreatingService  = "Error storing service"
+	ErrNotECPublicKey  	  = `Key is not a valid ECDSA public key`
+	ErrNotECPrivateKey 	  = `Key is not a valid ECDSA private key`
+	ErrKeyMustBePEMEncoded = `Key is not a valid PEM format`
+	ERRORCreatingService  = `Error storing service`
 	ERRORParsingService   = `Error parsing service`
 	ERRORServiceExists    = `The service already exists in registry`
 	ERRORDidMissing       = `Error calling service, no service DID Specified`

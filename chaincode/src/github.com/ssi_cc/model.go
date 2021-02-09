@@ -1,5 +1,10 @@
 package main
 
+import (
+	"math/big"
+	"encoding/json"
+)
+
 // Identity stored in bc
 type Identity struct {
 	Did 	   string `json:"did,omitempty"`
@@ -46,6 +51,17 @@ type Service struct {
 	// TODO: Remove, it will be included in the access policy
 
 	Channel string `json:"channel"`
+}
+
+// Encapsulates the overall message we're trying to decode and validate.
+type Envelope struct {
+    RawMessage json.RawMessage `json:"message"`
+    Message    interface{}     `json:"-"`
+    Signature  string          `json:"signature"`
+}
+
+type ECDSASignature struct {
+    R, S *big.Int
 }
 
 // PolicyType ..

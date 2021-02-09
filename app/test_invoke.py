@@ -46,38 +46,41 @@
 ###     secret = '-----BEGIN EC PRIVATE KEY-----MHQCAQEEIB0/t/AxKgqIb+XhPAPKXcZ+CN6/EfEotMv1ROMfXpGPoAcGBSuBBAAKoUQDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END EC PRIVATE KEY-----'
 ###     publick = '-----BEGIN PUBLIC KEY-----MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END PUBLIC KEY-----'
 ###     
-###     msg = '{"did": "did:vtn:trustos:company:2","publicKey": "-----BEGIN PUBLIC KEY-----MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END PUBLIC KEY-----"}'
-###     
-###     ##msgCoded = json.dumps(msg)
-###     
+###     msg = '{"did": "did:vtn:trustos:company:2","publicKey": "-----BEGIN PUBLIC KEY-----MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END PUBLIC KEY-----", "hash": "bd945a92d5f849d07b52e1f7cdf895e2552ef542519fbed2196de88f9cef8cab", "signature": "3045022100b8cf1f382a70bf7524051817db9aa017bea056fa0cabb7b6dbf7152ce223edd702200897e7158e4e9b1ccf43fa99a3211221b4800e44fc504cb124f1ecf1408e7d67"}'
+
+##msgCoded = json.dumps(msg)
+
 ###     h = hashlib.sha256()
 ###     h.update(msg.encode("utf-8"))
 ###     print(h.hexdigest())
 ###     print(h.digest())
 ###     msg_sha256_hash = h.digest()
-###     
+
 ###     sk = ecdsa.SigningKey.from_pem(open("privk.pem").read())
 ###     sig = sk.sign_digest(
 ###         msg_sha256_hash,
 ###         sigencode=ecdsa.util.sigencode_der,
 ###     )
+
+###     print(sig)
+
 ###     sigCoded = codecs.encode(sig, 'hex_codec')
-###     
-###     ##########  Inspect the Signature
+###     print(sigCoded)
+
+##########  Inspect the Signature
 ###     seq = Sequence.load(sig)
 ###     print(seq.native)
 ###     for k, v in seq.native.items():
 ###         print("%s => %X" % (k, v))
-###     
-###     #####   Base64-Encode the Signature for Transmission
+
+#####   Base64-Encode the Signature for Transmission
 ###     b64hash = base64.b64encode(msg.encode("utf-8"))
-###     print(str(b64hash))
-###     
+###     print(b64hash)
+
 ###     b64sig = base64.b64encode(sig)
 ###     print(str(b64sig))
-###     
-###     
-###     #payload = h.hexdigest() + '.' + sigCoded.decode('utf-8')
+
+###     payload = h.hexdigest() + '.' + sigCoded.decode('utf-8')
 ###     payload = str(b64hash) + '.' + str(b64sig)
 ###     print(payload.encode('utf-8'))
 
@@ -103,7 +106,7 @@ gopath = os.path.normpath(os.path.join(
 ))
 os.environ['GOPATH'] = os.path.abspath(gopath)
 
-args = ["{\"did\":\"did:vtn:trustos:company:2\",\"payload\":\"eyJkaWQiOiAiZGlkOnZ0bjp0cnVzdG9zOmNvbXBhbnk6MiIsInB1YmxpY0tleSI6ICItLS0tLUJFR0lOIFBVQkxJQyBLRVktLS0tLU1GWXdFQVlIS29aSXpqMENBUVlGSzRFRUFBb0RRZ0FFK3FKS25iVkNyUDhCWll5ekMyTytzYm9DalpaREZCOHdoVWZqR0NhR0lOOFdmUEViQzZqdk81MEljMVlRcXM4MW1GcHNtM0NNRmxpdHRiMUNIYzNoZ0E9PS0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLSJ9.MEYCIQC3W8U6laz/4T7gV32lskiHzsLR69a1xycDKSt3yI2/oQIhAPFafQAOQljquppDjduteF0LZIulIe55v1MSxlGAdQJF\"}"]
+args = ["{\"did\":\"did:vtn:trustos:company:2\",\"payload\":\"eyJkaWQiOiAiZGlkOnZ0bjp0cnVzdG9zOmNvbXBhbnk6MiIsInB1YmxpY0tleSI6ICItLS0tLUJFR0lOIFBVQkxJQyBLRVktLS0tLU1GWXdFQVlIS29aSXpqMENBUVlGSzRFRUFBb0RRZ0FFK3FKS25iVkNyUDhCWll5ekMyTytzYm9DalpaREZCOHdoVWZqR0NhR0lOOFdmUEViQzZqdk81MEljMVlRcXM4MW1GcHNtM0NNRmxpdHRiMUNIYzNoZ0E9PS0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLSIsICJoYXNoIjogImJkOTQ1YTkyZDVmODQ5ZDA3YjUyZTFmN2NkZjg5NWUyNTUyZWY1NDI1MTlmYmVkMjE5NmRlODhmOWNlZjhjYWIiLCAic2lnbmF0dXJlIjogIjMwNDUwMjIxMDBiOGNmMWYzODJhNzBiZjc1MjQwNTE4MTdkYjlhYTAxN2JlYTA1NmZhMGNhYmI3YjZkYmY3MTUyY2UyMjNlZGQ3MDIyMDA4OTdlNzE1OGU0ZTliMWNjZjQzZmE5OWEzMjExMjIxYjQ4MDBlNDRmYzUwNGNiMTI0ZjFlY2YxNDA4ZTdkNjcifQ==\"}"]
 response = loop.run_until_complete(cli.chaincode_invoke(
     requestor=org1_admin,
     channel_name='modbuschannel',

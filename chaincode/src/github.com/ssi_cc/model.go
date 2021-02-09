@@ -2,7 +2,7 @@ package main
 
 import (
 	"math/big"
-	"encoding/json"
+	//"encoding/json"
 )
 
 // Identity stored in bc
@@ -55,9 +55,10 @@ type Service struct {
 
 // Encapsulates the overall message we're trying to decode and validate.
 type Envelope struct {
-    RawMessage json.RawMessage `json:"message"`
-    Message    interface{}     `json:"-"`
-    Signature  string          `json:"signature"`
+    Did	string	`json:"did"`
+    PublicKey	string	`json:"publicKey"`
+	Hash	string	`json:"hash"`
+	Signature	string	`json:"signature"`
 }
 
 type ECDSASignature struct {

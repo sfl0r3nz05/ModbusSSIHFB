@@ -2,7 +2,6 @@ package main
  
 import (
 	"errors"
-	//"testing"
     "strings"
 	"crypto/x509"
 	"encoding/pem"
@@ -13,35 +12,6 @@ import (
 	"encoding/base64"
     log "github.com/log"
 )
-
-func checkSignature(payload string, key string) (map[string]interface{}, error) {
-
-	pbkey, err := parsePublicKeyX509(key)
-	if err != nil {
-		log.Infof("[%s][%s][verifySignature] Error verifying signature %s", CHANNEL_ENV, JoseUTIL, err.Error())
-		return nil, errors.New(ERRORVerifying)
-	}
-
-	mesPayload, err := base64.StdEncoding.DecodeString(payload)
-    if err != nil {
-		log.Infof("[%s][%s][DecodeString] Decode payload %s", CHANNEL_ENV, IDREGISTRY, err)
-    }
-
-	mesPayloadStr := string([]byte (mesPayload))
-	
-	envelope, err := NewEnvelopeFromJSON(mesPayloadStr)
-    if err != nil {
-		log.Infof("[%s][%s][verifySignature] Error returning envelope %s", CHANNEL_ENV, IDREGISTRY, err)
-    }
-
-	// now we validate the signature against the public key
-    if err := envelope.Validate(pbkey); err != nil {
-		log.Infof("[%s][%s][Validate] Envelope %s", CHANNEL_ENV, IDREGISTRY, envelope)
-    }
-
-	params := make(map[string]interface{})
-	return params, nil
-}
 
 //####################################################################################################################
 
@@ -60,7 +30,7 @@ func parsePublicKeyX509(publicKey string) (*ecdsa.PublicKey, error) {
 		return nil, errors.New("Failed to decode PEM public key") // ERROR MUST BE COMPLIANT
 	}
 
-	log.Infof("[%s][%s][parsePublicKeyX509] block %s", CHANNEL_ENV, JoseUTIL, block)
+	log.Infof("[%s][%s][parsePublicKeyX509] block %s", CHANNEL_ENV, JOSEUTIL, block)
 
 	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
     if err != nil {
@@ -79,7 +49,6 @@ func NewEnvelopeFromJSON(s string) (*Envelope, error) {
     if err := json.Unmarshal([]byte(s), &e); err != nil {
         return nil, err
     }
-	log.Infof("[%s][%s][NewEnvelopeFromJSON] Envelope: %s", CHANNEL_ENV, JoseUTIL, e)
     return &e, nil
 }
 
@@ -93,24 +62,42 @@ func hash(b []byte) []byte {
 }
 
 func (e *Envelope) Validate(publicKey *ecdsa.PublicKey) error {
-    // first decode the signature to extract the DER-encoded byte string
-    der	:= []byte (e.Signature)
+    
     // unmarshal the R and S components of the ASN.1-encoded signature into our
+    signature, err := base64.StdEncoding.DecodeString(e.Signature)
+    if err != nil {
+        log.Errorf("[%s][%s][Validate] Signature decoding failure", CHANNEL_ENV, JOSEUTIL)
+        return err
+    }
+
+    // unmarshal the R and S components of the ASN.1-encoded signature into our
+    has, err := base64.StdEncoding.DecodeString(e.Hash)
+    if err != nil {
+        log.Errorf("[%s][%s][Validate] Hash decoding failure", CHANNEL_ENV, JOSEUTIL)
+        return err
+    }
+    
     // signature data structure
     sig := &ECDSASignature{}
-    asn1.Unmarshal(der, sig)
-    // compute the SHA256 hash of our message
-    h := []byte (e.Hash)
+    _, err = asn1.Unmarshal(signature, sig)
+    if err != nil {
+        log.Errorf("[%s][%s][ECDSASignature] ECDSASignature failure", CHANNEL_ENV, JOSEUTIL)
+        return err
+    }
+
     // validate the signature!
     valid := ecdsa.Verify(
         publicKey,
-        h,
+        has,
         sig.R,
         sig.S,
     )
     if !valid {
+        log.Errorf("[%s][%s][Verify] Verify failure", CHANNEL_ENV, JOSEUTIL)
         return errors.New("Signature validation failed")
     }
     // signature is valid
     return nil
 }
+
+//####################################################################################################################

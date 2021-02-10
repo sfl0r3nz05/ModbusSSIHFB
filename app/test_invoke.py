@@ -35,58 +35,60 @@
 #
 #generateDID(pathwallet, controller, pathpubKey, pathprivKey)
 
-###     import json
-###     import ecdsa
-###     import codecs
-###     import base64
-###     import struct
-###     import hashlib
-###     from asn1crypto.core import Sequence
-###     
-###     secret = '-----BEGIN EC PRIVATE KEY-----MHQCAQEEIB0/t/AxKgqIb+XhPAPKXcZ+CN6/EfEotMv1ROMfXpGPoAcGBSuBBAAKoUQDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END EC PRIVATE KEY-----'
-###     publick = '-----BEGIN PUBLIC KEY-----MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END PUBLIC KEY-----'
-###     
-###     msg = '{"did": "did:vtn:trustos:company:2","publicKey": "-----BEGIN PUBLIC KEY-----MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END PUBLIC KEY-----", "hash": "bd945a92d5f849d07b52e1f7cdf895e2552ef542519fbed2196de88f9cef8cab", "signature": "3045022100b8cf1f382a70bf7524051817db9aa017bea056fa0cabb7b6dbf7152ce223edd702200897e7158e4e9b1ccf43fa99a3211221b4800e44fc504cb124f1ecf1408e7d67"}'
-
-##msgCoded = json.dumps(msg)
-
-###     h = hashlib.sha256()
-###     h.update(msg.encode("utf-8"))
-###     print(h.hexdigest())
-###     print(h.digest())
-###     msg_sha256_hash = h.digest()
-
-###     sk = ecdsa.SigningKey.from_pem(open("privk.pem").read())
-###     sig = sk.sign_digest(
-###         msg_sha256_hash,
-###         sigencode=ecdsa.util.sigencode_der,
-###     )
-
-###     print(sig)
-
-###     sigCoded = codecs.encode(sig, 'hex_codec')
-###     print(sigCoded)
-
-##########  Inspect the Signature
-###     seq = Sequence.load(sig)
-###     print(seq.native)
-###     for k, v in seq.native.items():
-###         print("%s => %X" % (k, v))
-
-#####   Base64-Encode the Signature for Transmission
-###     b64hash = base64.b64encode(msg.encode("utf-8"))
-###     print(b64hash)
-
+###    import json
+###    import ecdsa
+###    import codecs
+###    import base64
+###    import struct
+###    import hashlib
+###    from asn1crypto.core import Sequence
+###    
+###    secret = '-----BEGIN EC PRIVATE KEY-----MHQCAQEEIB0/t/AxKgqIb+XhPAPKXcZ+CN6/EfEotMv1ROMfXpGPoAcGBSuBBAAKoUQDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END EC PRIVATE KEY-----'
+###    publick = '-----BEGIN PUBLIC KEY-----MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END PUBLIC KEY-----'
+###    
+###    ###     msg = '{"did": "did:vtn:trustos:company:2","publicKey": "-----BEGIN PUBLIC KEY-----MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END PUBLIC KEY-----", "hash": "", "signature": ""}'
+###    msg = '{"did": "ZGlkOnZ0bjp0cnVzdG9zOmNvbXBhbnk6Mg==","publicKey": "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS1NRll3RUFZSEtvWkl6ajBDQVFZRks0RUVBQW9EUWdBRStxSktuYlZDclA4QlpZeXpDMk8rc2JvQ2paWkRGQjh3aFVmakdDYUdJTjhXZlBFYkM2anZPNTBJYzFZUXFzODFtRnBzbTNDTUZsaXR0YjFDSGMzaGdBPT0tLS0tLUVORCBQVUJMSUMgS0VZLS0tLS0=", "hash": "vZRaktX4SdB7UuH3zfiV4lUu9UJRn77SGW3oj5zvjKs=", "signature": "MEQCIFhAzrnaoUoBggPr7RYAFfFOzsCBmu8HMJAeOZV/Afn5AiAUXrjHY936CH0HSEME+ZJgxLwTXjOEE4kMij9KZc3sFQ=="}'
+###    
+###    msgCoded = json.dumps(msg)
+###    h = hashlib.sha256()
+###    h.update(msg.encode("utf-8"))
+###    ###     print(h.hexdigest())
+###    ###     print(h.digest())
+###    msg_sha256_hash = h.digest()
+###    sk = ecdsa.SigningKey.from_pem(open("privk.pem").read())
+###    sig = sk.sign_digest(
+###        msg_sha256_hash,
+###        sigencode=ecdsa.util.sigencode_der,
+###    )
+###    
+###    ###Inspect the Signature
+###    ###     seq = Sequence.load(sig)
+###    #       print(seq.native)
+###    ###     for k, v in seq.native.items():
+###        ###     print("%s => %X" % (k, v))
+###    
+###    ###Base64-Encode the Signature for Transmission
+###    b64hash = base64.b64encode(("did:vtn:trustos:company:2").encode("utf-8"))
+###    print(b64hash)
+###    
+###    b64hash = base64.b64encode(("-----BEGIN PUBLIC KEY-----MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+qJKnbVCrP8BZYyzC2O+sboCjZZDFB8whUfjGCaGIN8WfPEbC6jvO50Ic1YQqs81mFpsm3CMFlittb1CHc3hgA==-----END PUBLIC KEY-----").encode("utf-8"))
+###    print(b64hash)
+###    
+###    b64hash = base64.b64encode(msg_sha256_hash)
+###    print(b64hash)
+###    
+###    b64hash = base64.b64encode(sig)
+###    print(b64hash)
+###    
+###    b64hash = base64.b64encode(msg.encode('utf-8'))
+###    print(b64hash)
 ###     b64sig = base64.b64encode(sig)
 ###     print(str(b64sig))
-
 ###     payload = h.hexdigest() + '.' + sigCoded.decode('utf-8')
 ###     payload = str(b64hash) + '.' + str(b64sig)
 ###     print(payload.encode('utf-8'))
 
-
-
-##############################################################################################################################################
+#######################################################################################################################################
 import os
 import asyncio
 import base64
@@ -106,7 +108,7 @@ gopath = os.path.normpath(os.path.join(
 ))
 os.environ['GOPATH'] = os.path.abspath(gopath)
 
-args = ["{\"did\":\"did:vtn:trustos:company:2\",\"payload\":\"eyJkaWQiOiAiZGlkOnZ0bjp0cnVzdG9zOmNvbXBhbnk6MiIsInB1YmxpY0tleSI6ICItLS0tLUJFR0lOIFBVQkxJQyBLRVktLS0tLU1GWXdFQVlIS29aSXpqMENBUVlGSzRFRUFBb0RRZ0FFK3FKS25iVkNyUDhCWll5ekMyTytzYm9DalpaREZCOHdoVWZqR0NhR0lOOFdmUEViQzZqdk81MEljMVlRcXM4MW1GcHNtM0NNRmxpdHRiMUNIYzNoZ0E9PS0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLSIsICJoYXNoIjogImJkOTQ1YTkyZDVmODQ5ZDA3YjUyZTFmN2NkZjg5NWUyNTUyZWY1NDI1MTlmYmVkMjE5NmRlODhmOWNlZjhjYWIiLCAic2lnbmF0dXJlIjogIjMwNDUwMjIxMDBiOGNmMWYzODJhNzBiZjc1MjQwNTE4MTdkYjlhYTAxN2JlYTA1NmZhMGNhYmI3YjZkYmY3MTUyY2UyMjNlZGQ3MDIyMDA4OTdlNzE1OGU0ZTliMWNjZjQzZmE5OWEzMjExMjIxYjQ4MDBlNDRmYzUwNGNiMTI0ZjFlY2YxNDA4ZTdkNjcifQ==\"}"]
+args = ["{\"did\":\"did:vtn:trustos:company:2\",\"payload\":\"eyJkaWQiOiAiWkdsa09uWjBianAwY25WemRHOXpPbU52YlhCaGJuazZNZz09IiwicHVibGljS2V5IjogIkxTMHRMUzFDUlVkSlRpQlFWVUpNU1VNZ1MwVlpMUzB0TFMxTlJsbDNSVUZaU0V0dldrbDZhakJEUVZGWlJrczBSVVZCUVc5RVVXZEJSU3R4U2t0dVlsWkRjbEE0UWxwWmVYcERNazhyYzJKdlEycGFXa1JHUWpoM2FGVm1ha2REWVVkSlRqaFhabEJGWWtNMmFuWlBOVEJKWXpGWlVYRnpPREZ0Um5CemJUTkRUVVpzYVhSMFlqRkRTR016YUdkQlBUMHRMUzB0TFVWT1JDQlFWVUpNU1VNZ1MwVlpMUzB0TFMwPSIsICJoYXNoIjogInZaUmFrdFg0U2RCN1V1SDN6ZmlWNGxVdTlVSlJuNzdTR1czb2o1enZqS3M9IiwgInNpZ25hdHVyZSI6ICJNRVFDSUZoQXpybmFvVW9CZ2dQcjdSWUFGZkZPenNDQm11OEhNSkFlT1pWL0FmbjVBaUFVWHJqSFk5MzZDSDBIU0VNRStaSmd4THdUWGpPRUU0a01pajlLWmMzc0ZRPT0ifQ==\"}"]
 response = loop.run_until_complete(cli.chaincode_invoke(
     requestor=org1_admin,
     channel_name='modbuschannel',

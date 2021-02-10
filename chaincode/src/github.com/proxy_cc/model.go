@@ -127,5 +127,5 @@ const (
 	IDREGISTRY            = `ID Registry`
 	ServiceGATEWAY        = `ID Service Gateway`
 	ServiceREGISTRY       = `ID Service Registry`
-	JoseUTIL              = `JOSE Util`
+	JOSEUTIL              = `JOSE Util`
 )

@@ -14,7 +14,7 @@ from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key, load_pem_public_key, load_ssh_public_key)
 
 
-def payloadToRegisterController(path_priv_key, did_wallet_path):
+def payloadToRegisterDid(path_priv_key, did_wallet_path):
 
     with open(path_priv_key, 'r') as ec_priv_file:
         priv_eckey = load_pem_private_key(force_bytes(
@@ -46,14 +46,25 @@ def payloadToRegisterController(path_priv_key, did_wallet_path):
             public_key = priv_eckey.public_key()
             pem = public_key.public_bytes(
                 encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
-            # pem.splitlines()[1] //To access to different segments of the pem
-            # loaded_public_key = serialization.load_pem_public_key(
-            #    pem, backend=default_backend())
+            
+            input = json.dumps({
+                "did": message.get('did'),
+                "publicKey": pem.decode("utf-8") ,
+            })
+            #   print(input)
+            #   inputParsed = input.replace("b'","")
+            #   inputParsedTwo = inputParsed.replace("n'","")
+            #   inputParsedThree = inputParsedTwo.replace('"','\\"')
+            #   inputParsedFour = inputParsedThree.replace('\\\\"','"')
+            #   inputParsedFive = '"' + inputParsedFour + '"'
+            #   print(inputParsedFour)
+            #   arg = "{\"did\":\"did:vtn:trustos:comp:2\",\"publicKey\":\"-----BEGIN PUBLIC KEY-----\\nMFkwEwYHKoZIzj0CAoZIzj0DAQcDQgAElk30LFnrF48XLeEHrG3K/r7215xg\\ngOEmGeRDdJ7f86ByD7uK/Jxje79Jtn9HNjyQahd7bBBKUOfcWG3Kh927oA==\\n-----END PUBLIC KEY-----\"}"
+            #   print(type(arg))
 
-            return message.get('did'), pem
+            return input
 
 
-def registerController(net_profile, organization, user, channel, peer, chaincode, function, arg1, arg2):
+def registerDid(net_profile, organization, user, channel, peer, chaincode, function, arg0):
     loop = asyncio.get_event_loop()
     cli = Client(net_profile=net_profile)
     org1_admin = cli.get_user(organization, user)
@@ -62,7 +73,7 @@ def registerController(net_profile, organization, user, channel, peer, chaincode
         os.path.realpath('__file__')), '../chaincode'))
     os.environ['GOPATH'] = os.path.abspath(gopath)
 
-    args = [arg1, arg2]
+    args = [arg0]
     loop.run_until_complete(cli.chaincode_invoke(
         requestor=org1_admin,
         channel_name=channel,
@@ -75,7 +86,7 @@ def registerController(net_profile, organization, user, channel, peer, chaincode
     ))
 
 
-def queryController(net_profile, organization, user, channel, peer, chaincode, function, arg1):
+def queryDid(net_profile, organization, user, channel, peer, chaincode, function, arg1):
     loop = asyncio.get_event_loop()
     cli = Client(net_profile=net_profile)
     org1_admin = cli.get_user(organization, user)

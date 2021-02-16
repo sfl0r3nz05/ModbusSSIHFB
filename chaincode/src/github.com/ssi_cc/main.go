@@ -20,7 +20,7 @@ func (cc *Chaincode) Init(stub shim.ChaincodeStubInterface) sc.Response {
 	CHANNEL_ENV = stub.GetChannelID()
 
 	log.Infof("[%s][IdentityCC][Init] Initializing identity root", CHANNEL_ENV)
-	idReq := IdentityRequest{}
+	idReq := Identity{}
 	_, args := stub.GetFunctionAndParameters()
 
 	err := json.Unmarshal([]byte(args[0]), &idReq)
@@ -28,7 +28,7 @@ func (cc *Chaincode) Init(stub shim.ChaincodeStubInterface) sc.Response {
 		log.Errorf("[%s][IdentityGateway][CreateIdentity] Error parsing: %v", CHANNEL_ENV, err.Error())
 	}
 
-	identityStore := Identity{PublicKey: idReq.PublicKey, Controller: idReq.Controller}
+	identityStore := Identity{PublicKey: idReq.PublicKey}
 	_, err = cc.createIDRegistry(stub, idReq.Did, identityStore)
 	if err != nil {
 		log.Errorf("[%s][IdentityGateway][CreateIdentity] Error parsing: %v", CHANNEL_ENV, err.Error())
@@ -50,7 +50,7 @@ func (cc *Chaincode) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
 		result, err = cc.verifyArgs(stub, params)
 	}
 	if err != nil {
-		log.Errorf("[%s][IdentityCC][Init] Errror %v", CHANNEL_ENV, err)
+		log.Errorf("[%s][IdentityCC][Init] Error %v", CHANNEL_ENV, err)
 		return shim.Error(err.Error())
 	}
 	return shim.Success([]byte(result))

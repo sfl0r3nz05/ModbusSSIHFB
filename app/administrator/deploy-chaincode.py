@@ -45,7 +45,7 @@ responses = loop.run_until_complete(cli.chaincode_install(
 ))
 
 # Instantiate Chaincode in Channel, the response should be true if succeed
-args = ["{\"did\":\"did:vtn:trustos:company:2\",\"controller\":\"did:vtn:trustos:company:2\",\"publicKey\":\"-----BEGIN PUBLIC KEY-----\\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElk30LFnrF48XLeEHrG3K/r7215xg\\ngOEmGeRDdJ7f86ByD7uK/Jxje79Jtn9HNjyQahd7bBBKUOfcWG3Kh927oA==\\n-----END PUBLIC KEY-----\"}"]
+args = ["{\"did\":\"did:vtn:trustos:company:2\",\"publicKey\":\"-----BEGIN PUBLIC KEY-----\\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElk30LFnrF48XLeEHrG3K/r7215xg\\ngOEmGeRDdJ7f86ByD7uK/Jxje79Jtn9HNjyQahd7bBBKUOfcWG3Kh927oA==\\n-----END PUBLIC KEY-----\"}"]
 
 # policy, see https://hyperledger-fabric.readthedocs.io/en/release-1.4/endorsement-policies.html
 policy = {

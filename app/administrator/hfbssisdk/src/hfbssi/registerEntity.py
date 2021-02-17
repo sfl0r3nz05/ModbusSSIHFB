@@ -1,0 +1,91 @@
+import os
+import json
+import ecdsa
+import codecs
+import base64
+import asyncio
+import hashlib
+from hfc.fabric import Client
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+from jwt.utils import base64url_decode, force_bytes, force_unicode
+from cryptography.hazmat.primitives.serialization import (
+    load_pem_private_key, load_pem_public_key, load_ssh_public_key)
+
+
+def payloadToRegisterIssuer(path_priv_key, did_wallet_path):
+
+    with open(path_priv_key, 'r') as ec_priv_file:
+        priv_eckey = load_pem_private_key(force_bytes(
+            ec_priv_file.read()), password=None, backend=default_backend())
+
+    with open(did_wallet_path) as did_file:
+        data = json.load(did_file)
+        temp_did = data['dids']
+        message = temp_did[0]
+
+        public_key = priv_eckey.public_key()
+        pem = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
+
+        msg = {
+            "method": "setIssuer",
+            "params": {
+                "did": message.get('did'),
+                "issuer": message.get('did'),
+                "publicKey": pem.decode("utf-8"),
+                },
+            "hash":"",
+            "signature":"",
+        }
+
+        h = hashlib.sha256()
+        h.update((str(msg)).encode("utf-8"))
+        msg_sha256_hash = h.digest()
+        dataToStr = json.dumps(msg)
+        dataToSign = str.encode(dataToStr)
+        signature_coded = priv_eckey.sign(dataToSign, ec.ECDSA(hashes.SHA256()))
+
+        ##msgNew = {
+        ##    "method": "setIssuer",
+        ##    "params": {
+        ##        "did": message.get('did'),
+        ##        "issuer": message.get('did'),
+        ##        "publicKey": base64.b64encode(pem),         ###"publicKey": base64.b64encode(pem.decode("utf-8")),
+        ##        },
+        ##    "hash": base64.b64encode(msg_sha256_hash),
+        ##    "signature": base64.b64encode(signature_coded),
+        ##}
+
+        msgNew = '{"did": "ZGlkOnZ0bjp0cnVzdG9zOmNvbXBhbnk6Mg==","publicKey": "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS1NRll3RUFZSEtvWkl6ajBDQVFZRks0RUVBQW9EUWdBRStxSktuYlZDclA4QlpZeXpDMk8rc2JvQ2paWkRGQjh3aFVmakdDYUdJTjhXZlBFYkM2anZPNTBJYzFZUXFzODFtRnBzbTNDTUZsaXR0YjFDSGMzaGdBPT0tLS0tLUVORCBQVUJMSUMgS0VZLS0tLS0=", "hash": "vZRaktX4SdB7UuH3zfiV4lUu9UJRn77SGW3oj5zvjKs=", "signature": "MEQCIFhAzrnaoUoBggPr7RYAFfFOzsCBmu8HMJAeOZV/Afn5AiAUXrjHY936CH0HSEME+ZJgxLwTXjOEE4kMij9KZc3sFQ=="}'
+
+        b64hash = base64.b64encode((str(msgNew)).encode('utf-8'))
+        input = json.dumps({
+            "did": message.get('did'),
+            "payload": b64hash.decode("utf-8"),
+        })
+        return input
+
+def registerIssuer(net_profile, organization, user, channel, peer, chaincode, function, arg0):
+    loop = asyncio.get_event_loop()
+    cli = Client(net_profile=net_profile)
+    org1_admin = cli.get_user(organization, user)
+    cli.new_channel(channel)
+    gopath = os.path.normpath(os.path.join(os.path.dirname(
+        os.path.realpath('__file__')), '../chaincode'))
+    os.environ['GOPATH'] = os.path.abspath(gopath)
+
+    args = [arg0]
+    loop.run_until_complete(cli.chaincode_invoke(
+        requestor=org1_admin,
+        channel_name=channel,
+        peers=[peer],
+        args=args,
+        cc_name=chaincode,
+        transient_map=None,  # optional, for private data
+        wait_for_event=True,
+        fcn=function,
+    ))

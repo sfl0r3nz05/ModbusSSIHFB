@@ -49,18 +49,8 @@ def payloadToRegisterDid(path_priv_key, did_wallet_path):
             
             input = json.dumps({
                 "did": message.get('did'),
-                "publicKey": pem.decode("utf-8") ,
+                "publicKey": pem.decode("utf-8"),
             })
-            #   print(input)
-            #   inputParsed = input.replace("b'","")
-            #   inputParsedTwo = inputParsed.replace("n'","")
-            #   inputParsedThree = inputParsedTwo.replace('"','\\"')
-            #   inputParsedFour = inputParsedThree.replace('\\\\"','"')
-            #   inputParsedFive = '"' + inputParsedFour + '"'
-            #   print(inputParsedFour)
-            #   arg = "{\"did\":\"did:vtn:trustos:comp:2\",\"publicKey\":\"-----BEGIN PUBLIC KEY-----\\nMFkwEwYHKoZIzj0CAoZIzj0DAQcDQgAElk30LFnrF48XLeEHrG3K/r7215xg\\ngOEmGeRDdJ7f86ByD7uK/Jxje79Jtn9HNjyQahd7bBBKUOfcWG3Kh927oA==\\n-----END PUBLIC KEY-----\"}"
-            #   print(type(arg))
-
             return input
 
 
@@ -84,67 +74,3 @@ def registerDid(net_profile, organization, user, channel, peer, chaincode, funct
         wait_for_event=True,
         fcn=function,
     ))
-
-
-def queryDid(net_profile, organization, user, channel, peer, chaincode, function, arg1):
-    loop = asyncio.get_event_loop()
-    cli = Client(net_profile=net_profile)
-    org1_admin = cli.get_user(organization, user)
-    cli.new_channel(channel)
-    gopath = os.path.normpath(os.path.join(os.path.dirname(
-        os.path.realpath('__file__')), '../chaincode'))
-    os.environ['GOPATH'] = os.path.abspath(gopath)
-
-    args = [arg1]
-    response = loop.run_until_complete(cli.chaincode_query(
-        requestor=org1_admin,
-        channel_name=channel,
-        peers=[peer],
-        args=args,
-        cc_name=chaincode,
-        fcn=function,
-    ))
-    return response
-
-
-def registerDidDoc(net_profile, organization, user, channel, peer, chaincode, function, arg1, arg2, arg3, arg4):
-    loop = asyncio.get_event_loop()
-    cli = Client(net_profile=net_profile)
-    org1_admin = cli.get_user(organization, user)
-    cli.new_channel(channel)
-    gopath = os.path.normpath(os.path.join(os.path.dirname(
-        os.path.realpath('__file__')), '../chaincode'))
-    os.environ['GOPATH'] = os.path.abspath(gopath)
-
-    args = [arg1, arg2, arg3, arg4]
-    loop.run_until_complete(cli.chaincode_invoke(
-        requestor=org1_admin,
-        channel_name=channel,
-        peers=[peer],
-        args=args,
-        cc_name=chaincode,
-        transient_map=None,  # optional, for private data
-        wait_for_event=True,
-        fcn=function,
-    ))
-
-
-def queryDidDoc(net_profile, organization, user, channel, peer, chaincode, function, arg1):
-    loop = asyncio.get_event_loop()
-    cli = Client(net_profile=net_profile)
-    org1_admin = cli.get_user(organization, user)
-    cli.new_channel(channel)
-    gopath = os.path.normpath(os.path.join(os.path.dirname(
-        os.path.realpath('__file__')), '../chaincode'))
-    os.environ['GOPATH'] = os.path.abspath(gopath)
-
-    args = [arg1]
-    response = loop.run_until_complete(cli.chaincode_query(
-        requestor=org1_admin,
-        channel_name=channel,
-        peers=[peer],
-        args=args,
-        cc_name=chaincode,
-        fcn=function,
-    ))
-    return response

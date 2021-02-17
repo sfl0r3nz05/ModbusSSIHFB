@@ -28,13 +28,14 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
             return "", err
         }
         log.Infof("[%s][%s][verifyArgs] created identity", CHANNEL_ENV, IDREGISTRY)
+        
+        result = "true"
+        return result, err
 	}
 
-    //log.Infof("[%s][%s][pubKeyRecovered] Ready To Verify Signature", CHANNEL_ENV, IDREGISTRY)
-	//params, err := checkSignature(idReq.Payload, identity.PublicKey)
-
-    //log.Infof("[%s][%s][signatureVeirifed] Ready To Read Payload", CHANNEL_ENV, IDREGISTRY)
-
+    log.Infof("[%s][%s][pubKeyRecovered] Ready To Verify Signature", CHANNEL_ENV, IDREGISTRY)
+	params, err := checkSignature(idReq.Payload, identity.PublicKey)
+    log.Infof("[%s][%s][signatureVeirifed] Ready To Read Payload", CHANNEL_ENV, IDREGISTRY)
     fmt.Printf("params 2: %s", params)
     
     return result, err

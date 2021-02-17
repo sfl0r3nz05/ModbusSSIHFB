@@ -153,4 +153,5 @@ const (
 	ServiceGATEWAY        = `ID Service Gateway`
 	ServiceREGISTRY       = `ID Service Registry`
 	JOSEUTIL              = `JOSE Util`
+	EDSA				  =	`EDSA`
 )

@@ -12,6 +12,7 @@ var ccErrorCode = "CC-01"
 func (cc *Chaincode) createIDRegistry(stub shim.ChaincodeStubInterface, did string, identity Identity) (string, error) {
 	log.Infof("[%s][%s][createIDRegistry] Create Identity for did %s", CHANNEL_ENV, IDREGISTRY, did)
 	bytes, err := stub.GetState(did)
+	var result string
 
 	if bytes != nil {
 		log.Errorf("[%s][%s][createIDRegistry] The identity already exists", CHANNEL_ENV, IDREGISTRY)
@@ -32,7 +33,9 @@ func (cc *Chaincode) createIDRegistry(stub shim.ChaincodeStubInterface, did stri
 	}
 	log.Infof("[%s][%s][createIDRegistry] Indentity stored for did %s", CHANNEL_ENV, IDREGISTRY, did)
 
-	return "", nil
+	result = "true"
+
+	return result, nil
 }
 
 func (cc *Chaincode) getIDRegistry(stub shim.ChaincodeStubInterface, did string) (*Identity, error) {

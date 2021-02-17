@@ -46,6 +46,8 @@ func parsePublicKeyX509(publicKey string) (*ecdsa.PublicKey, error) {
 // Attempts to create a new envelope structure from the given JSON string.
 func NewEnvelopeFromJSON(s string) (*Envelope, error) {
     var e Envelope
+    log.Infof("[%s][%s][NewEnvelopeFromJSON] Before the envelope %s", CHANNEL_ENV, EDSA, s)
+
     if err := json.Unmarshal([]byte(s), &e); err != nil {
         return nil, err
     }

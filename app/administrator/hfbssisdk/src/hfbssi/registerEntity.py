@@ -5,7 +5,9 @@ import codecs
 import base64
 import asyncio
 import hashlib
+import binascii
 from hfc.fabric import Client
+from asn1crypto.core import Sequence
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.backends import default_backend
@@ -19,50 +21,34 @@ from cryptography.hazmat.primitives.serialization import (
 def payloadToRegisterIssuer(path_priv_key, did_wallet_path):
 
     with open(path_priv_key, 'r') as ec_priv_file:
-        priv_eckey = load_pem_private_key(force_bytes(
-            ec_priv_file.read()), password=None, backend=default_backend())
+        priv_eckey = ecdsa.SigningKey.from_pem(ec_priv_file.read())
 
     with open(did_wallet_path) as did_file:
         data = json.load(did_file)
         temp_did = data['dids']
         message = temp_did[0]
 
-        public_key = priv_eckey.public_key()
-        pem = public_key.public_bytes(
-            encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo)
+        pem = priv_eckey.get_verifying_key().to_pem()
 
-        msg = {
-            "method": "setIssuer",
-            "params": {
-                "did": message.get('did'),
-                "issuer": message.get('did'),
-                "publicKey": pem.decode("utf-8"),
-                },
-            "hash":"",
-            "signature":"",
-        }
+        msg = {"method": "setIssuer","params": {"did": message.get('did'),"issuer": message.get('did'),"publicKey": pem.decode("utf-8"), }, "hash": "", "signature": "",}
 
         h = hashlib.sha256()
         h.update((str(msg)).encode("utf-8"))
         msg_sha256_hash = h.digest()
         dataToStr = json.dumps(msg)
         dataToSign = str.encode(dataToStr)
-        signature_coded = priv_eckey.sign(dataToSign, ec.ECDSA(hashes.SHA256()))
+        signature_coded = priv_eckey.sign_digest(msg_sha256_hash,sigencode=ecdsa.util.sigencode_der,)
 
-        ##msgNew = {
-        ##    "method": "setIssuer",
-        ##    "params": {
-        ##        "did": message.get('did'),
-        ##        "issuer": message.get('did'),
-        ##        "publicKey": base64.b64encode(pem),         ###"publicKey": base64.b64encode(pem.decode("utf-8")),
-        ##        },
-        ##    "hash": base64.b64encode(msg_sha256_hash),
-        ##    "signature": base64.b64encode(signature_coded),
-        ##}
+        seq = Sequence.load(signature_coded)
+        print(seq.native)
+        # print out the key/value pairs embedded in the sequence in hexadecimal
+        for k, v in seq.native.items():
+            print("%s => %X" % (k, v))
 
-        msgNew = '{"did": "ZGlkOnZ0bjp0cnVzdG9zOmNvbXBhbnk6Mg==","publicKey": "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS1NRll3RUFZSEtvWkl6ajBDQVFZRks0RUVBQW9EUWdBRStxSktuYlZDclA4QlpZeXpDMk8rc2JvQ2paWkRGQjh3aFVmakdDYUdJTjhXZlBFYkM2anZPNTBJYzFZUXFzODFtRnBzbTNDTUZsaXR0YjFDSGMzaGdBPT0tLS0tLUVORCBQVUJMSUMgS0VZLS0tLS0=", "hash": "vZRaktX4SdB7UuH3zfiV4lUu9UJRn77SGW3oj5zvjKs=", "signature": "MEQCIFhAzrnaoUoBggPr7RYAFfFOzsCBmu8HMJAeOZV/Afn5AiAUXrjHY936CH0HSEME+ZJgxLwTXjOEE4kMij9KZc3sFQ=="}'
-
-        b64hash = base64.b64encode((str(msgNew)).encode('utf-8'))
+        msgNew = {"method": "setIssuer", "params": {"did": message.get('did'), "issuer": message.get('did'), "publicKey": base64.b64encode(pem)}, "hash": base64.b64encode(msg_sha256_hash), "signature": base64.b64encode(signature_coded)}
+        msgNewP1 = (str(msgNew)).replace("b'", "'")
+        msgNewP2 = msgNewP1.replace("'", '"')
+        b64hash = base64.b64encode(msgNewP2.encode('utf-8'))
         input = json.dumps({
             "did": message.get('did'),
             "payload": b64hash.decode("utf-8"),

@@ -14,13 +14,15 @@ from hfbssisdk.src.hfbssi.registerEntity import payloadToRegisterIssuer
 ############################################################ ADMIN ##################################################################################################################################################################
 
 # 1. Generar el did para el issuer
+#path_priv_key = '/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk'
 pathwallet = '/home/ubuntu/ModbusSSIHFB/app/administrator/walletKey.json'
 pathwalletDid = '/home/ubuntu/ModbusSSIHFB/app/administrator/walletDid.json'
-path_priv_key = '/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk'
+path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/administrator/privk.key'
 createDID(pathwallet, pathwalletDid, path_priv_key)
 
 # 2. Generar payload para registrar la identidad del issuer
-path_priv_key = '/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk'
+#path_priv_key = '/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk'
+path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/administrator/privk.key'
 did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/administrator/walletDid.json'
 payload = payloadToRegisterDid(path_priv_key, did_wallet_path)
  
@@ -36,8 +38,9 @@ registerDid(net_profile, organization, user, channel,
                    peer, chaincode, function, payload)
 
 
-# 4. Generar payload para Registrar al issuer como issuer
-path_priv_key = '/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk'
+# 4. Generar payload para Registrar al issuer como issuer   
+#path_priv_key = '/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk'
+path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/administrator/privk.key'
 did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/administrator/walletDid.json'
 payload = payloadToRegisterIssuer(path_priv_key, did_wallet_path)
 

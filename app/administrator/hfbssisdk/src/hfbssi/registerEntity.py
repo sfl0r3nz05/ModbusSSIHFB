@@ -18,7 +18,7 @@ from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key, load_pem_public_key, load_ssh_public_key)
 
 
-def payloadToRegisterIssuer(path_priv_key, did_wallet_path):
+def payloadToRegisterEntity(path_priv_key, did_wallet_path, method, issuer):
 
     with open(path_priv_key, 'r') as ec_priv_file:
         priv_eckey = ecdsa.SigningKey.from_pem(ec_priv_file.read())
@@ -30,7 +30,7 @@ def payloadToRegisterIssuer(path_priv_key, did_wallet_path):
 
         pem = priv_eckey.get_verifying_key().to_pem()
 
-        msg = {"method": "setIssuer","params": {"did": message.get('did'),"issuer": message.get('did'),"publicKey": pem.decode("utf-8"), }, "hash": "", "signature": "",}
+        msg = {"method": method,"params": {"did": message.get('did'),"issuer": issuer,"publicKey": pem.decode("utf-8"), }, "hash": "", "signature": "",}
 
         h = hashlib.sha256()
         h.update((str(msg)).encode("utf-8"))
@@ -39,7 +39,7 @@ def payloadToRegisterIssuer(path_priv_key, did_wallet_path):
         dataToSign = str.encode(dataToStr)
         signature_coded = priv_eckey.sign_digest(msg_sha256_hash,sigencode=ecdsa.util.sigencode_der,)
 
-        msgNew = {"method": "setIssuer", "params": {"did": message.get('did'), "issuer": message.get('did'), "publicKey": base64.b64encode(pem)}, "hash": base64.b64encode(msg_sha256_hash), "signature": base64.b64encode(signature_coded)}
+        msgNew = {"method": method, "params": {"did": message.get('did'), "issuer": issuer, "publicKey": base64.b64encode(pem)}, "hash": base64.b64encode(msg_sha256_hash), "signature": base64.b64encode(signature_coded)}
         msgNewP1 = (str(msgNew)).replace("b'", "'")
         msgNewP2 = msgNewP1.replace("'", '"')
         b64hash = base64.b64encode(msgNewP2.encode('utf-8'))
@@ -49,7 +49,7 @@ def payloadToRegisterIssuer(path_priv_key, did_wallet_path):
         })
         return input
 
-def registerIssuer(net_profile, organization, user, channel, peer, chaincode, function, arg0):
+def registerEntity(net_profile, organization, user, channel, peer, chaincode, function, arg0):
     loop = asyncio.get_event_loop()
     cli = Client(net_profile=net_profile)
     org1_admin = cli.get_user(organization, user)

@@ -39,12 +39,6 @@ def payloadToRegisterIssuer(path_priv_key, did_wallet_path):
         dataToSign = str.encode(dataToStr)
         signature_coded = priv_eckey.sign_digest(msg_sha256_hash,sigencode=ecdsa.util.sigencode_der,)
 
-        seq = Sequence.load(signature_coded)
-        print(seq.native)
-        # print out the key/value pairs embedded in the sequence in hexadecimal
-        for k, v in seq.native.items():
-            print("%s => %X" % (k, v))
-
         msgNew = {"method": "setIssuer", "params": {"did": message.get('did'), "issuer": message.get('did'), "publicKey": base64.b64encode(pem)}, "hash": base64.b64encode(msg_sha256_hash), "signature": base64.b64encode(signature_coded)}
         msgNewP1 = (str(msgNew)).replace("b'", "'")
         msgNewP2 = msgNewP1.replace("'", '"')
@@ -71,7 +65,7 @@ def registerIssuer(net_profile, organization, user, channel, peer, chaincode, fu
         peers=[peer],
         args=args,
         cc_name=chaincode,
-        transient_map=None,  # optional, for private data
+        transient_map=None,
         wait_for_event=True,
         fcn=function,
     ))

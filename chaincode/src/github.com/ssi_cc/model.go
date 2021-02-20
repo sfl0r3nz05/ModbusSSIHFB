@@ -2,7 +2,6 @@ package main
 
 import (
 	"math/big"
-	//"encoding/json"
 )
 
 // Identity stored in bc
@@ -12,8 +11,9 @@ type Identity struct {
 }
 
 // Identity stored in bc
-type Controller struct {
+type Issuer struct {
 	Did       string `json:"did,omitempty"`
+	Issuer string `json:"issuer,omitempty"`
 	PublicKey string `json:"publicKey,omitempty"`
 }
 
@@ -44,17 +44,15 @@ type Request struct {
 type Service struct {
 	Name       string `json:"name"`
 	Controller string `json:"controller,omitempty"` // issuer's DID
-	// Access     map[string]int `json:"access,omitempty"`     // mapping did - access type
 	Access AccessPolicy `json:"access,omitempty"` // issuer's DID
-	// Access     map[string]int `json:"access,omit
-	// TODO: Remove, it will be included in the access policy
-
 	Channel string `json:"channel"`
 }
 
 // Encapsulates the overall message we're trying to decode and validate.
 type Envelope struct {
-    Did	string	`json:"did"`
+    //Did	string	`json:"did"`
+	Method	string	`json:"method"`
+	Params	map[string]interface{} `json:"params,omitempty"`
     PublicKey	string	`json:"publicKey"`
 	Hash	string	`json:"hash"`
 	Signature	string	`json:"signature"`
@@ -74,8 +72,6 @@ const (
 	SameControllerPolicy = "SAME_CONTROLLER"
 	// FineGrainedPolicy anyone with access can interact
 	FineGrainedPolicy = "FINE_GRAINED"
-	// TODO: You can add additional PolicyTypes. Remember to add verification
-	// logic in hasAccess from chaincode.gateway.go.
 )
 
 // AccessPolicy policy
@@ -113,7 +109,6 @@ type Event struct {
 }
 
 // Error responses
-// ERROR_XXX occurs when XXX
 const (
 	ERRORWrongNumberArgs  = `Wrong number of arguments. Expecting a JSON with token information.`
 	ERRORParsingData      = `Error parsing data `

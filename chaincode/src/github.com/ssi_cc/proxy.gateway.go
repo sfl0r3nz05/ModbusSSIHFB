@@ -1,7 +1,6 @@
 package main
 
 import (
-    "fmt"
 	"encoding/json"
     log "github.com/log"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -10,6 +9,7 @@ import (
 func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string) (string, error) {
     log.Infof("[%s][%s][checkArgs] Get Identity", CHANNEL_ENV, IDGATEWAY)
     var result string
+    var issuer Issuer
     var identity *Identity
     idReq := Request{}
 
@@ -33,10 +33,39 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
         return result, err
 	}
 
-    log.Infof("[%s][%s][pubKeyRecovered] Ready To Verify Signature", CHANNEL_ENV, IDREGISTRY)
-	params, err := checkSignature(idReq.Payload, identity.PublicKey)
-    log.Infof("[%s][%s][signatureVeirifed] Ready To Read Payload", CHANNEL_ENV, IDREGISTRY)
-    fmt.Printf("params 2: %s", params)
+	method, params, err := checkSignature(idReq.Payload, identity.PublicKey)
+    
+    if method == "setIssuer" {
+		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+        jsonStr, err := json.Marshal(params)
+        if err != nil {
+            log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+
+        err = json.Unmarshal([]byte(jsonStr), &issuer)
+        if err != nil {
+            log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+
+        log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, issuer.Did)
+	}
+    if method == "getIssuer" {
+		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+	}
+    if method == "setEntity" {
+		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+	}
+    if method == "getEntity" {
+		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+	}
+    if method == "setDidDoc" {
+		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+	}
+    if method == "getDidDoc" {
+		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+	}
     
     return result, err
 }

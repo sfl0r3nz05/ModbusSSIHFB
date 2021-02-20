@@ -23,8 +23,8 @@
       ],
       "users": {
         "Admin": {
-          "cert": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/Admin@example.com-cert.pem",
-          "private_key": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore/630e3767a6e1d3c8e646460123d397455103a900efb4d6fb679a9d9c481841fc_sk"
+          "cert": "../crypto-material/config_solo/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/Admin@example.com-cert.pem",
+          "private_key": "../crypto-material/config_solo/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore/630e3767a6e1d3c8e646460123d397455103a900efb4d6fb679a9d9c481841fc_sk"
         }
       }
     },
@@ -38,12 +38,12 @@
       ],
       "users": {
         "Admin": {
-          "cert": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem",
-          "private_key": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk"
+          "cert": "../crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem",
+          "private_key": "../crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk"
         },
         "User1": {
-          "cert": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem",
-          "private_key": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/da72fd6c0f4595d33eb9ae6f6d06cd171ebc3882fc856960c244b9b5c2b35a90_sk"
+          "cert": "../crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem",
+          "private_key": "../crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/da72fd6c0f4595d33eb9ae6f6d06cd171ebc3882fc856960c244b9b5c2b35a90_sk"
         }
       }
     },
@@ -57,12 +57,12 @@
       ],
       "users": {
         "Admin": {
-          "cert": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem",
-          "private_key": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/7e0b1c172161fe0f33603106935d2584918e12af955108e429dd63d4c043067a_sk"
+          "cert": "../crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem",
+          "private_key": "../crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/7e0b1c172161fe0f33603106935d2584918e12af955108e429dd63d4c043067a_sk"
         },
         "User1": {
-          "cert": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/signcerts/User1@org2.example.com-cert.pem",
-          "private_key": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/keystore/73beefad9003c589064deb2128c4f0831ba8003f1233102cc52a188afd05fe61_sk"
+          "cert": "../crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/signcerts/User1@org2.example.com-cert.pem",
+          "private_key": "../crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/keystore/73beefad9003c589064deb2128c4f0831ba8003f1233102cc52a188afd05fe61_sk"
         }
       }
     }
@@ -75,7 +75,7 @@
         "grpc-max-send-message-length": 15
       },
       "tlsCACerts": {
-        "path": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem"
+        "path": "../crypto-material/config_solo/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem"
       }
     }
   },
@@ -88,7 +88,7 @@
         "grpc.http2.keepalive_time": 15
       },
       "tlsCACerts": {
-        "path": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem"
+        "path": "../crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem"
       }
     },
     "peer0.org2.example.com": {
@@ -99,7 +99,7 @@
         "grpc.http2.keepalive_time": 15
       },
       "tlsCACerts": {
-        "path": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem"
+        "path": "../crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem"
       }
     }
   },
@@ -110,7 +110,7 @@
         "verify": true
       },
       "tlsCACerts": {
-        "path": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/ca/org1.example.com-cert.pem"
+        "path": "../crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/ca/org1.example.com-cert.pem"
       },
       "registrar": [
         {
@@ -125,7 +125,7 @@
         "verify": true
       },
       "tlsCACerts": {
-        "path": "/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/ca/org2.example.com-cert.pem"
+        "path": "../crypto-material/config_solo/crypto-config/peerOrganizations/org2.example.com/ca/org2.example.com-cert.pem"
       },
       "registrar": [
         {

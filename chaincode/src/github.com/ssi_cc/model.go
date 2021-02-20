@@ -145,6 +145,7 @@ const (
 	ERRORVerifying        = `Error verifying signature `
 	IDGATEWAY             = `ID Gateway`
 	IDREGISTRY            = `ID Registry`
+	ISSUERREGISTRY		  = `ISSUER Registry`
 	ServiceGATEWAY        = `ID Service Gateway`
 	ServiceREGISTRY       = `ID Service Registry`
 	JOSEUTIL              = `JOSE Util`

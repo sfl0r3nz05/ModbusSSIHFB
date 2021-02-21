@@ -1,5 +1,5 @@
 {
-    "dids": [
+    "diddoc": [
         {
             "did": "did:vtn:trustid:beaf4dafac54331621dd6c685248f9e26ee45703a697f571b4d34562bd7c73fb",
             "controller": "did:vtn:trustid:d7104427989de1fa5729c68f8cb767bb0740ecd65b3b080e9a725a04297f9641",

@@ -10,7 +10,14 @@ type Identity struct {
 	PublicKey  string `json:"publicKey"`
 }
 
-// Identity stored in bc
+// Entity's identity stored in bc
+type Entity struct {
+	Did       string `json:"did,omitempty"`
+	Issuer string `json:"issuer,omitempty"`
+	PublicKey string `json:"publicKey,omitempty"`
+}
+
+// Issuer's identity stored in bc
 type Issuer struct {
 	Did       string `json:"did,omitempty"`
 	Issuer string `json:"issuer,omitempty"`
@@ -40,14 +47,6 @@ type Request struct {
 	Payload   string `json:"payload,omitempty"` // me pasa una firma // el controller lo meto yo
 }
 
-// Service stored in bc
-type Service struct {
-	Name       string `json:"name"`
-	Controller string `json:"controller,omitempty"` // issuer's DID
-	Access AccessPolicy `json:"access,omitempty"` // issuer's DID
-	Channel string `json:"channel"`
-}
-
 // Encapsulates the overall message we're trying to decode and validate.
 type Envelope struct {
     //Did	string	`json:"did"`
@@ -60,52 +59,6 @@ type Envelope struct {
 
 type ECDSASignature struct {
     R, S *big.Int
-}
-
-// PolicyType ..
-type PolicyType string
-
-const (
-	// PublicPolicy the service is public
-	PublicPolicy PolicyType = "PUBLIC"
-	// SameControllerPolicy the controller service must be equal to the did's controller that is invoking the service
-	SameControllerPolicy = "SAME_CONTROLLER"
-	// FineGrainedPolicy anyone with access can interact
-	FineGrainedPolicy = "FINE_GRAINED"
-)
-
-// AccessPolicy policy
-type AccessPolicy struct {
-	Policy    PolicyType     `json:"policy"`
-	Threshold int            `json:"threshold,omitempty"`
-	Registry  map[string]int `json:"registry,omitempty"`
-}
-
-// ServiceRequest stored in bc
-type ServiceRequest struct {
-	Name   string       `json:"name"`
-	Did    string       `json:"did"`
-	Access AccessPolicy `json:"access,omitempty"`
-}
-
-// IdentityUnverifiedRequest to serialize args
-type IdentityUnverifiedRequest struct {
-	PublicKey string `json:"publicKey"`
-	Payload   string `json:"payload,omitempty"` // me pasa una firma // el controller lo meto yo
-}
-
-// CcRequest payload from jws
-type CcRequest struct {
-	Name    string   `json:"name,omitempty"`
-	Args    []string `json:"args"`
-	Channel string   `json:"channel"`
-	Did     string   `json:"did"`
-}
-
-// Event to handle events in HF
-type Event struct {
-	EventName string `json:"eventName"` // name for the event
-	Payload   []byte `json:"payload"`   // payload for the
 }
 
 // Error responses
@@ -146,6 +99,7 @@ const (
 	IDGATEWAY             = `ID Gateway`
 	IDREGISTRY            = `ID Registry`
 	ISSUERREGISTRY		  = `ISSUER Registry`
+	ENTITYREGISTRY		  = `ENTITY Registry`
 	ServiceGATEWAY        = `ID Service Gateway`
 	ServiceREGISTRY       = `ID Service Registry`
 	JOSEUTIL              = `JOSE Util`

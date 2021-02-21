@@ -83,22 +83,22 @@ registerDid(net_profile, organization, user, channel,
                     peer, chaincode, function, payload)
 
 # 9. Generar payload para Registrar al cliente como entidad
-#   path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/privk.key'
-#   did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/administrator/walletDid.json'
-#   method = "setEntity"
-#   issuer = "did:vtn:trustid:e320a9308621efa599ca7b9c2462ac05421dfe6ae4cd7dd91132ace1a4f6829b"
-#   payload = payloadToRegisterEntity(path_priv_key, did_wallet_path, method, issuer)
+path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/privk.key'
+did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/walletDid.json'
+method = "setEntity"
+issuer = "did:vtn:trustid:e320a9308621efa599ca7b9c2462ac05421dfe6ae4cd7dd91132ace1a4f6829b"
+payload = payloadToRegisterEntity(path_priv_key, did_wallet_path, method, issuer)
 
 # 10. Registrar el cliente como entidad
-#   net_profile = '../../connection-profile/2org_2peer_solo/network.json'
-#   organization = 'org1.example.com'
-#   user = 'User1'
-#   channel = 'modbuschannel'
-#   peer = 'peer0.org1.example.com'
-#   chaincode = 'ssi_cc'
-#   function = 'proxy'
-#   registerEntity(net_profile, organization, user, channel,
-#                      peer, chaincode, function, payload)
+net_profile = '../../connection-profile/2org_2peer_solo/network.json'
+organization = 'org1.example.com'
+user = 'User1'
+channel = 'modbuschannel'
+peer = 'peer0.org1.example.com'
+chaincode = 'ssi_cc'
+function = 'proxy'
+registerEntity(net_profile, organization, user, channel,
+                    peer, chaincode, function, payload)
 ############################################################ CLIENT ##################################################################################################################################################################
     
 ############################################################ SERVER ##################################################################################################################################################################
@@ -125,20 +125,20 @@ registerDid(net_profile, organization, user, channel,
                     peer, chaincode, function, payload)
 
 # 14. Generar payload para Registrar al cliente como entidad
-#   path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/privk.key'
-#   did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/administrator/walletDid.json'
-#   method ="setEntity"
-#   issuer ="did:vtn:trustid:e320a9308621efa599ca7b9c2462ac05421dfe6ae4cd7dd91132ace1a4f6829b"
-#   payload = payloadToRegisterEntity(path_priv_key, did_wallet_path, method, issuer)
+path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/privk.key'
+did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/walletDid.json'
+method ="setEntity"
+issuer ="did:vtn:trustid:e320a9308621efa599ca7b9c2462ac05421dfe6ae4cd7dd91132ace1a4f6829b"
+payload = payloadToRegisterEntity(path_priv_key, did_wallet_path, method, issuer)
 
 # 15. Registrar el cliente como entidad
-#   net_profile = '../../connection-profile/2org_2peer_solo/network.json'
-#   organization = 'org2.example.com'
-#   user = 'User1'
-#   channel = 'modbuschannel'
-#   peer = 'peer0.org2.example.com'
-#   chaincode = 'ssi_cc'
-#   function = 'proxy'
-#   registerEntity(net_profile, organization, user, channel,
-#                      peer, chaincode, function, payload)
+net_profile = '../../connection-profile/2org_2peer_solo/network.json'
+organization = 'org2.example.com'
+user = 'User1'
+channel = 'modbuschannel'
+peer = 'peer0.org2.example.com'
+chaincode = 'ssi_cc'
+function = 'proxy'
+registerEntity(net_profile, organization, user, channel,
+                    peer, chaincode, function, payload)
 ############################################################ SERVER ##################################################################################################################################################################

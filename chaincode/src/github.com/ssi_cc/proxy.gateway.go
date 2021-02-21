@@ -10,6 +10,7 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
     log.Infof("[%s][%s][checkArgs] Get Identity", CHANNEL_ENV, IDGATEWAY)
     var result string
     var issuer Issuer
+    var entity Entity
     var identity *Identity
     idReq := Request{}
 
@@ -50,10 +51,22 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
         }
         result, err = cc.setIssuer(stub, issuer.Did, issuer.Issuer, issuer.PublicKey)
 	}
-    if method == "getIssuer" {
-		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
-	}
     if method == "setEntity" {
+		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+        jsonStr, err := json.Marshal(params)
+        if err != nil {
+            log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+
+        err = json.Unmarshal([]byte(jsonStr), &entity)
+        if err != nil {
+            log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+        result, err = cc.setEntity(stub, entity.Did, entity.Issuer, entity.PublicKey)
+	}
+    if method == "getIssuer" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
 	}
     if method == "getEntity" {

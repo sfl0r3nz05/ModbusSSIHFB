@@ -24,15 +24,6 @@ type Issuer struct {
 	PublicKey string `json:"publicKey,omitempty"`
 }
 
-// IdentityRequest to serialize args
-type DidDoc struct {
-	Did        string `json:"did"`
-	Controller string `json:"controller,omitempty"`
-	PublicKey  string `json:"publicKey"`
-	Payload    string `json:"payload,omitempty"` // me pasa una firma // el controller lo meto yo
-	Access     int    `json:"access,omitempty"`
-}
-
 type IdentityRequest struct {
 	Did        string `json:"did"`
 	Controller string `json:"controller,omitempty"`
@@ -59,6 +50,30 @@ type Envelope struct {
 
 type ECDSASignature struct {
     R, S *big.Int
+}
+
+// IdentityRequest to serialize args
+type DidDoc struct {
+	Context	string `json:"context"`
+	Did	string `json:"did"`
+	Authentication []Authentication `json:"authentication,omitempty"`
+	Service []Service `json:"service,omitempty"`
+}
+
+type Authentication struct{
+	Id	string `json:"id"`
+	Type	string `json:"type"`
+	Issuer	string `json:"issuer"`
+	PublicKeyBase58	string `json:"publicKeyBase58"`
+}
+
+type Service struct{
+	Id	string `json:"id"`
+	Type	string `json:"type"`
+	ServiceEndpoint	string `json:"serviceEndpoint"`
+	FunctionCode	string `json:"functionCode"`
+	StartingAddress	string `json:"startingAddress"`
+	Offset	string `json:"offset"`
 }
 
 // Error responses
@@ -99,6 +114,7 @@ const (
 	IDGATEWAY             = `ID Gateway`
 	IDREGISTRY            = `ID Registry`
 	ISSUERREGISTRY		  = `ISSUER Registry`
+	DIDDOCREGISTRY		  = `DIDDOC Registry`
 	ENTITYREGISTRY		  = `ENTITY Registry`
 	ServiceGATEWAY        = `ID Service Gateway`
 	ServiceREGISTRY       = `ID Service Registry`

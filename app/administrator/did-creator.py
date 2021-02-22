@@ -137,10 +137,10 @@ path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/privk.key'
 did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/walletDid.json'
 wallet_DidDoc = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/walletDidDoc.json'
 method = "setDidDoc"
-payloadToRegisterDidDoc(path_priv_key, did_wallet_path, wallet_DidDoc, method)
+payload = payloadToRegisterDidDoc(path_priv_key, did_wallet_path, wallet_DidDoc, method)
 
 
-# 15. El cliente prepara el payload para registrar
+# 15. El cliente Registra el DidDoc
 net_profile = '../../connection-profile/2org_2peer_solo/network.json'
 organization = 'org1.example.com'
 user = 'User1'
@@ -196,7 +196,7 @@ peer = 'peer0.org2.example.com'
 chaincode = 'ssi_cc'
 function = 'proxy'
 registerEntity(net_profile, organization, user, channel,
-#                        peer, chaincode, function, payload)
+                    peer, chaincode, function, payload)
 
 
 # 21. El server crea el DidDoc como entidad
@@ -204,32 +204,44 @@ path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/privk.key'
 did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/walletDid.json'
 wallet_DidDoc = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/walletDidDoc.json'
 issuer = "did:vtn:trustid:e320a9308621efa599ca7b9c2462ac05421dfe6ae4cd7dd91132ace1a4f6829b"
-port = 802
-fnc = 5
-address = 10
-offset = 10
+port = "802"
+fnc = "5"
+address = "10"
+offset = "10"
 createDidDocServer(path_priv_key, did_wallet_path, wallet_DidDoc, issuer, port, fnc, address, offset)
-#    ############################################################ SERVER ##################################################################################################################################################################
+############################################################# SERVER ##################################################################################################################################################################
 
 
-#    ############################################################ ADMIN ##################################################################################################################################################################
+############################################################# ADMIN ##################################################################################################################################################################
 # 22. El admin firma el DidDoc una vez creado por el server
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/privk.key'
 wallet_DidDoc = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/walletDidDoc.json'
 adminSignature(path_priv_key, wallet_DidDoc)
-#    ############################################################ ADMIN ##################################################################################################################################################################
+############################################################# ADMIN ##################################################################################################################################################################
 
 
-#    ############################################################ SERVER ##################################################################################################################################################################
+############################################################# SERVER ##################################################################################################################################################################
 # 23. El servidor countersign el DidDoc una vez creado por el server
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/privk.key'
 wallet_DidDoc = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/walletDidDoc.json'
 counterSign(path_priv_key, wallet_DidDoc)
 
-# 24. El server prepara el payload para registrar
+# 24. El server prepara el payload para registrar el DidDoc
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/privk.key'
 did_wallet_path = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/walletDid.json'
 wallet_DidDoc = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/walletDidDoc.json'
 method = "setDidDoc"
-payloadToRegisterDidDoc(path_priv_key, did_wallet_path, wallet_DidDoc, method)
-#    ############################################################ SERVER ##################################################################################################################################################################
+payload = payloadToRegisterDidDoc(path_priv_key, did_wallet_path, wallet_DidDoc, method)
+
+
+# 25. El servidor Registra el DidDoc
+net_profile = '../../connection-profile/2org_2peer_solo/network.json'
+organization = 'org2.example.com'
+user = 'User1'
+channel = 'modbuschannel'
+peer = 'peer0.org2.example.com'
+chaincode = 'ssi_cc'
+function = 'proxy'
+registerDidDoc(net_profile, organization, user, channel,
+                    peer, chaincode, function, payload)
+############################################################# SERVER ##################################################################################################################################################################

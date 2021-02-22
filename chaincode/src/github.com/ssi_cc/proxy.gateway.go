@@ -8,6 +8,7 @@ import (
 
 func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string) (string, error) {
     log.Infof("[%s][%s][checkArgs] Get Identity", CHANNEL_ENV, IDGATEWAY)
+    var diddoc DidDoc
     var result string
     var issuer Issuer
     var entity Entity
@@ -51,6 +52,9 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
         }
         result, err = cc.setIssuer(stub, issuer.Did, issuer.Issuer, issuer.PublicKey)
 	}
+    if method == "getIssuer" {
+		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+	}
     if method == "setEntity" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
         jsonStr, err := json.Marshal(params)
@@ -66,14 +70,24 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
         }
         result, err = cc.setEntity(stub, entity.Did, entity.Issuer, entity.PublicKey)
 	}
-    if method == "getIssuer" {
-		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
-	}
     if method == "getEntity" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
 	}
     if method == "setDidDoc" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+        jsonStr, err := json.Marshal(params)
+        if err != nil {
+            log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+
+        err = json.Unmarshal([]byte(jsonStr), &diddoc)
+        if err != nil {
+            log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+        log.Infof("[%s][verifyArgs][CreateIdentity] diddoc: %s", CHANNEL_ENV, diddoc)
+        result, err = cc.setDidDoc(stub, diddoc.Context, diddoc.Did)
 	}
     if method == "getDidDoc" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)

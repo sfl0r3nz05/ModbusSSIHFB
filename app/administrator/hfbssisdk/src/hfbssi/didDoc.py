@@ -27,7 +27,7 @@ def createDidDocClient(path_priv_key, did_wallet_path, wallet_DidDoc, issuer):
         issuer = issuer
         signature = ""
         countersign = ""
-        diddoc = {"@context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:port".format(ipaddress)}], "signature": signature, "countersign": countersign}
+        diddoc = {"context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:port".format(ipaddress),}], "signature": signature, "countersign": countersign}
         temp.append(diddoc)
         
     with open(wallet_DidDoc, 'w') as wallet_file:
@@ -55,7 +55,7 @@ def createDidDocServer(path_priv_key, did_wallet_path, wallet_DidDoc, issuer, po
         issuer = issuer
         signature = ""
         countersign = ""
-        diddoc = {"@context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:{}".format(ipaddress, port), "functionCode": fnc, "startingAddress": address, "offset": offset,}], "signature": signature, "countersign": countersign}
+        diddoc = {"context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:{}".format(ipaddress, port), "functionCode": fnc, "startingAddress": address, "offset": offset,}], "signature": signature, "countersign": countersign}
         temp.append(diddoc)
         
     with open(wallet_DidDoc, 'w') as wallet_file:

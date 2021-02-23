@@ -1,6 +1,6 @@
 import sys
 from hfbssisdk.src.hfbssi.did import createDID
-from hfbssisdk.src.hfbssi.didDoc import counterSign
+from hfbssisdk.src.hfbssi.didDoc import counterSignature
 from hfbssisdk.src.hfbssi.didDoc import adminSignature
 from hfbssisdk.src.hfbssi.registerDid import registerDid
 from hfbssisdk.src.hfbssi.didDoc import createDidDocClient
@@ -127,10 +127,10 @@ adminSignature(path_priv_key, wallet_DidDoc)
 
 
 #    ############################################################ CLIENT ##################################################################################################################################################################
-# 13. El cliente countersign el DidDoc una vez creado por el cliente
+# 13. El cliente countersignature el DidDoc una vez creado por el cliente
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/privk.key'
 wallet_DidDoc = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/walletDidDoc.json'
-counterSign(path_priv_key, wallet_DidDoc)
+counterSignature(path_priv_key, wallet_DidDoc)
 
 # 14. El cliente prepara el payload para registrar
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-client/privk.key'
@@ -221,10 +221,10 @@ adminSignature(path_priv_key, wallet_DidDoc)
 
 
 ############################################################# SERVER ##################################################################################################################################################################
-# 23. El servidor countersign el DidDoc una vez creado por el server
+# 23. El servidor countersignature el DidDoc una vez creado por el server
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/privk.key'
 wallet_DidDoc = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/walletDidDoc.json'
-counterSign(path_priv_key, wallet_DidDoc)
+counterSignature(path_priv_key, wallet_DidDoc)
 
 # 24. El server prepara el payload para registrar el DidDoc
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/modbus-sync-server/privk.key'

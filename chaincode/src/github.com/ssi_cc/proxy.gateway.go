@@ -12,8 +12,8 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
     var result string
     var issuer Issuer
     var entity Entity
-    var identity *Identity
     idReq := Request{}
+    var identity *Identity
 
     err := json.Unmarshal([]byte(args[0]), &idReq)
     log.Infof("[%s][%s][signatureVeirifed] idReq content: %v", CHANNEL_ENV, IDREGISTRY, args[0])
@@ -75,6 +75,7 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
 	}
     if method == "setDidDoc" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+
         jsonStr, err := json.Marshal(params)
         if err != nil {
             log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
@@ -87,7 +88,10 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
             return "", err
         }
         log.Infof("[%s][verifyArgs][CreateIdentity] diddoc: %s", CHANNEL_ENV, diddoc)
-        result, err = cc.setDidDoc(stub, diddoc.Context, diddoc.Did)
+        log.Infof("[%s][verifyArgs][CreateIdentity] Authentication: %s", CHANNEL_ENV, diddoc.Authentication[0].Id)
+        log.Infof("[%s][verifyArgs][CreateIdentity] Service: %s", CHANNEL_ENV, diddoc.Service[0].ServiceEndpoint)
+
+        result, err = cc.setDidDoc(stub, diddoc.Did, diddoc.Context, diddoc.Signature, diddoc.Countersignature, diddoc.Authentication[0].Id, diddoc.Authentication[0].Issuer, diddoc.Authentication[0].PublicKeyBase58, diddoc.Authentication[0].Type, diddoc.Service[0].ServiceEndpoint, diddoc.Service[0].FunctionCode, diddoc.Service[0].Id,diddoc.Service[0].Offset, diddoc.Service[0].StartingAddress, diddoc.Service[0].Type)
 	}
     if method == "getDidDoc" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)

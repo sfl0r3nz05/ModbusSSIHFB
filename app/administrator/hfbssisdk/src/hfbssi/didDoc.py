@@ -26,8 +26,8 @@ def createDidDocClient(path_priv_key, did_wallet_path, wallet_DidDoc, issuer):
         ipaddress = socket.gethostbyname(socket.gethostname())
         issuer = issuer
         signature = ""
-        countersign = ""
-        diddoc = {"context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:port".format(ipaddress),}], "signature": signature, "countersign": countersign}
+        countersignature = ""
+        diddoc = {"context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:port".format(ipaddress),}], "signature": signature, "countersignature": countersignature}
         temp.append(diddoc)
         
     with open(wallet_DidDoc, 'w') as wallet_file:
@@ -54,8 +54,8 @@ def createDidDocServer(path_priv_key, did_wallet_path, wallet_DidDoc, issuer, po
         ipaddress = socket.gethostbyname(socket.gethostname())
         issuer = issuer
         signature = ""
-        countersign = ""
-        diddoc = {"context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:{}".format(ipaddress, port), "functionCode": fnc, "startingAddress": address, "offset": offset,}], "signature": signature, "countersign": countersign}
+        countersignature = ""
+        diddoc = {"context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:{}".format(ipaddress, port), "functionCode": fnc, "startingAddress": address, "offset": offset,}], "signature": signature, "countersignature": countersignature}
         temp.append(diddoc)
         
     with open(wallet_DidDoc, 'w') as wallet_file:
@@ -82,7 +82,7 @@ def adminSignature(path_priv_key, wallet_DidDoc):
     with open(wallet_DidDoc, 'w') as wallet_file:
         json.dump(data, wallet_file, indent=4)
 
-def counterSign(path_priv_key, wallet_DidDoc):
+def counterSignature(path_priv_key, wallet_DidDoc):
     with open(path_priv_key, 'r') as ec_priv_file:
         priv_eckey = ecdsa.SigningKey.from_pem(ec_priv_file.read())
     with open(wallet_DidDoc) as wallet_file:
@@ -93,11 +93,11 @@ def counterSign(path_priv_key, wallet_DidDoc):
         msg_sha256_hash = h.digest()
         dataToStr = json.dumps(temp)
         dataToSign = str.encode(dataToStr)
-        countersign_coded = priv_eckey.sign_digest(msg_sha256_hash,sigencode=ecdsa.util.sigencode_der,)
-        countersign_codedBase64 = base64.b64encode(countersign_coded)
-        countersign = str(countersign_codedBase64)
-        countersign = countersign.replace("b'", "")
-        countersign = countersign.replace("'", "")
-        data['diddoc'][0]["countersign"] = countersign
+        countersignature_coded = priv_eckey.sign_digest(msg_sha256_hash,sigencode=ecdsa.util.sigencode_der,)
+        countersignature_codedBase64 = base64.b64encode(countersignature_coded)
+        countersignature = str(countersignature_codedBase64)
+        countersignature = countersignature.replace("b'", "")
+        countersignature = countersignature.replace("'", "")
+        data['diddoc'][0]["countersignature"] = countersignature
     with open(wallet_DidDoc, 'w') as wallet_file:
         json.dump(data, wallet_file, indent=4)

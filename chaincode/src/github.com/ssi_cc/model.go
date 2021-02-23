@@ -58,6 +58,8 @@ type DidDoc struct {
 	Did	string `json:"did"`
 	Authentication []Authentication `json:"authentication,omitempty"`
 	Service []Service `json:"service,omitempty"`
+	Signature	string `json:"signature"`
+	Countersignature	string `json:"countersignature"`
 }
 
 type Authentication struct{

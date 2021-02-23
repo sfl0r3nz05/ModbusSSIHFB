@@ -88,10 +88,7 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
             return "", err
         }
         log.Infof("[%s][verifyArgs][CreateIdentity] diddoc: %s", CHANNEL_ENV, diddoc)
-        log.Infof("[%s][verifyArgs][CreateIdentity] Authentication: %s", CHANNEL_ENV, diddoc.Authentication[0].Id)
-        log.Infof("[%s][verifyArgs][CreateIdentity] Service: %s", CHANNEL_ENV, diddoc.Service[0].ServiceEndpoint)
-
-        result, err = cc.setDidDoc(stub, diddoc.Did, diddoc.Context, diddoc.Signature, diddoc.Countersignature, diddoc.Authentication[0].Id, diddoc.Authentication[0].Issuer, diddoc.Authentication[0].PublicKeyBase58, diddoc.Authentication[0].Type, diddoc.Service[0].ServiceEndpoint, diddoc.Service[0].FunctionCode, diddoc.Service[0].Id,diddoc.Service[0].Offset, diddoc.Service[0].StartingAddress, diddoc.Service[0].Type)
+        result, err = cc.setDidDoc(stub, diddoc.Did, diddoc.Context, diddoc.Signature, diddoc.Countersignature, diddoc.Authentication[0].Id, diddoc.Authentication[0].Type, diddoc.Authentication[0].Issuer, diddoc.Authentication[0].PublicKeyBase58,  diddoc.Service[0].Id, diddoc.Service[0].Type, diddoc.Service[0].ServiceEndpoint, diddoc.Service[0].FunctionCode, diddoc.Service[0].StartingAddress, diddoc.Service[0].Offset)
 	}
     if method == "getDidDoc" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)

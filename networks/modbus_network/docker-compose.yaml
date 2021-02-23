@@ -1,39 +1,30 @@
 version: "3"
 
-volumes:
-  prometheus_data: {}
-  grafana_storage: {}
-
 services:     
-  sync-server:
-    image: sflorenz05/modbusssihfb:sync-server
-    container_name: sync-server
-    working_dir: /app/HFBapp
+  modbus-server:
+    image: sflorenz05/modbusssihfb:modbus-server
+    container_name: modbus-server
+    working_dir: /app/modbus-sync-server
     volumes:
-      - ../../app/modbus-sync-server/sync-server.py:/sync-server.py
-      - ../../app/modbus-sync-server/sync.py:/usr/local/lib/python3.8/dist-packages/pymodbus/server/sync.py
-      - ../../app/modbus-sync-server:/app/HFBapp
+      - ../../app/modbus-sync-server:/app/modbus-sync-server
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material
       - ../../chaincode:/app/chaincode
-    command: sh -c "python3 ../../sync-server.py"
+    command: sh -c "python3 registration.py"
     ports: 
       - 5020:5020
 
-  sync-client:
-    image: sflorenz05/modbusssihfb:sync-client
-    container_name: sync-client
-    environment: 
-      - IP_SERVER=192.168.96.2
+  modbus-client:
+    image: sflorenz05/modbusssihfb:modbus-client
+    container_name: modbus-client1
     depends_on: 
-      - sync-server
-    working_dir: /app/HFBapp
+      - modbus-server
+    working_dir: /app/modbus-sync-client
     volumes:
-      - ../../app/modbus-sync-client/sync-client.py:/sync-client.py
-      - ../../app/modbus-sync-client:/app/HFBapp
+      - ../../app/modbus-sync-client:/app/modbus-sync-client
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material
       - ../../chaincode:/app/chaincode
-    command: sh -c "python3 ../../sync-client.py"
+    command: sh -c "python3 registration.py"
     ports: 
       - 5021:5021

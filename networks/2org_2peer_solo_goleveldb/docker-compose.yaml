@@ -203,12 +203,12 @@ services:
       - peer0.org2.example.com
       - ca.org1.example.com
       - ca.org2.example.com
-    working_dir: /HFBapp
+    working_dir: /administrator
     volumes:
-      - ./../../app/administrator:/HFBapp
+      - ./../../app/administrator:/administrator
       - ./../../connection-profile:/connection-profile
       - ./../../crypto-material:/crypto-material
       - ./../../chaincode:/chaincode
-    command: sh -c "python3 channel-join.py && python3 deploy-chaincode.py"
+    command: sh -c "python3 channel-join.py && python3 deploy-chaincode.py && python3 registration.py"
     ports:
       - 6020:6020

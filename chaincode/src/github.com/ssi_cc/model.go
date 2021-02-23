@@ -60,6 +60,16 @@ type DidDoc struct {
 	Service []Service `json:"service,omitempty"`
 	Signature	string `json:"signature"`
 	Countersignature	string `json:"countersignature"`
+	AuthId	string `json:"authId"`
+	AuthType	string `json:"authType"`
+	AuthIssuer	string `json:"authIssuer"`
+	AuthPublicKeyBase58	string `json:"authPublicKeyBase58"`
+	ServiceId	string `json:"serviceId"`
+	ServiceType	string `json:"serviceType"`
+	ServiceEndPoint	string `json:"serviceEndPoint"`
+	ServiceFunctCode	string `json:"serviceFunctCode"`
+	ServiceStartAddr	string `json:"serviceStartAdd"`
+	ServiceOffset	string `json:"serviceOffset"`
 }
 
 type Authentication struct{

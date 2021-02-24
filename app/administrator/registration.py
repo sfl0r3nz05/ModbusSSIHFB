@@ -25,6 +25,7 @@ path_priv_key = './privk.key'
 did_wallet_path = './walletDid.json'
 payload = payloadToRegisterDid(path_priv_key, did_wallet_path)
 
+print(payload)
 
 # 3. Registrar la identity del issuer
 net_profile = '../connection-profile/2org_2peer_solo/network.json'
@@ -46,6 +47,7 @@ method = "setIssuer"
 issuer = "did:vtn:trustid:e320a9308621efa599ca7b9c2462ac05421dfe6ae4cd7dd91132ace1a4f6829b"
 payload = payloadToRegisterEntity(path_priv_key, did_wallet_path, method, issuer)
 
+print(payload)
 
 # 5. Registrar el issuer como issuer
 net_profile = '../connection-profile/2org_2peer_solo/network.json'

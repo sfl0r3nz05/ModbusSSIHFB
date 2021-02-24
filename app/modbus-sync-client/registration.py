@@ -23,7 +23,7 @@ createDID(pathwallet, pathwalletDid, path_priv_key)
 path_priv_key = './privk.key'
 did_wallet_path = './walletDid.json'
 payload = payloadToRegisterDid(path_priv_key, did_wallet_path)
-
+print(payload)
 
 # 8. Register identity para el issuer
 net_profile = '../connection-profile/2org_2peer_solo/network.json'
@@ -44,6 +44,7 @@ method = "setEntity"
 issuer = "did:vtn:trustid:e320a9308621efa599ca7b9c2462ac05421dfe6ae4cd7dd91132ace1a4f6829b"
 payload = payloadToRegisterEntity(path_priv_key, did_wallet_path, method, issuer)
 
+print(payload)
 
 # 10. Registrar el cliente como entidad
 net_profile = '../connection-profile/2org_2peer_solo/network.json'
@@ -84,7 +85,7 @@ did_wallet_path = './walletDid.json'
 wallet_DidDoc = './walletDidDoc.json'
 method = "setDidDoc"
 payload = payloadToRegisterDidDoc(path_priv_key, did_wallet_path, wallet_DidDoc, method)
-
+print(payload)
 
 # 15. El cliente Registra el DidDoc
 net_profile = '../connection-profile/2org_2peer_solo/network.json'

@@ -20,7 +20,6 @@ pathwalletDid = '/home/ubuntu/ModbusSSIHFB/app/administrator/walletDid.json'
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/administrator/privk.key'
 createDID(pathwallet, pathwalletDid, path_priv_key)
 
-
 # 2. Generar payload para registrar la identidad del issuer
 #path_priv_key = '/home/ubuntu/ModbusSSIHFB/crypto-material/config_solo/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/c76527489d5820bd04da80a84c07033ca574413f80614091e04f05c276fb6896_sk'
 path_priv_key = '/home/ubuntu/ModbusSSIHFB/app/administrator/privk.key'

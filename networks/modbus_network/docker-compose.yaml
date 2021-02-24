@@ -2,7 +2,7 @@ version: "3"
 
 services:     
   modbus-server:
-    image: sflorenz05/modbusssihfb:modbus-server
+    image: sflorenz05/modbusssihfb:modbus-sync-base
     container_name: modbus-server
     working_dir: /app/modbus-sync-server
     volumes:
@@ -15,7 +15,7 @@ services:
       - 5020:5020
 
   modbus-client:
-    image: sflorenz05/modbusssihfb:modbus-client
+    image: sflorenz05/modbusssihfb:modbus-sync-base
     container_name: modbus-client1
     depends_on: 
       - modbus-server

@@ -6,6 +6,7 @@ services:
     container_name: modbus-server
     working_dir: /app/modbus-sync-server
     volumes:
+      - ../../app/modbus-sync-server/sinc.py:/usr/local/lib/python3.8/dist-packages/pymodbus/server/sync.py      
       - ../../app/modbus-sync-server:/app/modbus-sync-server
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material
@@ -21,6 +22,7 @@ services:
       - modbus-server
     working_dir: /app/modbus-sync-client
     volumes:
+      - ../../app/modbus-sync-client/sinc.py:/usr/local/lib/python3.8/dist-packages/pymodbus/client/sync.py    
       - ../../app/modbus-sync-client:/app/modbus-sync-client
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material

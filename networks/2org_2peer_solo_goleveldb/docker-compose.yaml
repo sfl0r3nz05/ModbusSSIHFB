@@ -205,6 +205,7 @@ services:
       - ca.org2.example.com
     working_dir: /administrator
     volumes:
+      - ../../app/administrator/hfbssisdk:/usr/local/lib/python3.8/dist-packages/hfbssisdk
       - ./../../app/administrator:/administrator
       - ./../../connection-profile:/connection-profile
       - ./../../crypto-material:/crypto-material

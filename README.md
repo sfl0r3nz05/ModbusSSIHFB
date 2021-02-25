@@ -44,3 +44,10 @@ e.g.
 6. How test
    cd app/administrator
    python3 did-creator.py
+
+7. openssl ecparam -name prime256v1 -genkey -noout -out server.key
+8. openssl req -new -key server.key -x509 -nodes -days 365 -out server.pem
+
+9. docker build -t modbus-sync-base .
+10. docker tag ab71c44c0fe9 sflorenz05/modbusssihfb:modbus-sync-base
+11. docker push sflorenz05/modbusssihfb:modbus-sync-base

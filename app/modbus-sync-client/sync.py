@@ -17,6 +17,8 @@ from pymodbus.transaction import ModbusSocketFramer, ModbusBinaryFramer
 from pymodbus.transaction import ModbusAsciiFramer, ModbusRtuFramer
 from pymodbus.transaction import ModbusTlsFramer
 from pymodbus.client.common import ModbusClientMixin
+from hfbssisdk.src.hfbssi.didFromPK import didFromPK
+from hfbssisdk.src.hfbssi.getEntity import payloadToGetEntity
 
 # --------------------------------------------------------------------------- #
 # Logging
@@ -313,7 +315,7 @@ class ModbusTlsClient(ModbusTcpClient):
     """
 
     def __init__(self, host='localhost', port=Defaults.TLSPort, sslctx=None,
-        framer=ModbusTlsFramer, certfile=None, keyfile=None, cafile=None, **kwargs):
+        framer=ModbusTlsFramer, certfile=None, keyfile=None, did_wallet_path= None, **kwargs):
         """ Initialize a client instance
 
         :param host: The host to connect to (default localhost)
@@ -326,10 +328,11 @@ class ModbusTlsClient(ModbusTcpClient):
         .. note:: The host argument will accept ipv4 and ipv6 hosts
         """
         self.sslctx = sslctx
+        self.keyfile = keyfile
+        self.did_wallet_path = did_wallet_path
         if self.sslctx is None:
             self.sslctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
             self.sslctx.load_cert_chain(certfile=certfile, keyfile=keyfile)
-            #self.sslctx.load_verify_locations(cafile=cafile)
             self.sslctx.verify_mode = ssl.CERT_REQUIRED
             self.sslctx.options |= ssl.OP_NO_TLSv1_1
             self.sslctx.options |= ssl.OP_NO_TLSv1
@@ -354,7 +357,9 @@ class ModbusTlsClient(ModbusTcpClient):
             x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_ASN1, cert)
             pubKeyObject = x509.get_pubkey()
             pubKeyString = OpenSSL.crypto.dump_publickey(OpenSSL.crypto.FILETYPE_PEM, pubKeyObject)
-            _logger.debug(pubKeyString)
+            did = didFromPK(pubKeyString)
+            payload = payloadToGetEntity(self.keyfile, self.did_wallet_path, "getEntity", did)
+            print(payload)
         except socket.error as msg:
             _logger.error('Connection to (%s, %s) '
                           'failed: %s' % (self.host, self.port, msg))

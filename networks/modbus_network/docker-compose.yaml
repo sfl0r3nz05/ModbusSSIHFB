@@ -6,27 +6,31 @@ services:
     container_name: modbus-server
     working_dir: /app/modbus-sync-server
     volumes:
-      - ../../app/modbus-sync-server/sinc.py:/usr/local/lib/python3.8/dist-packages/pymodbus/server/sync.py      
+      - ../../app/modbus-sync-server/sync.py:/usr/local/lib/python3.8/dist-packages/pymodbus/server/sync.py      
+      - ../../app/modbus-sync-client/hfbssisdk:/usr/local/lib/python3.8/dist-packages/hfbssisdk
       - ../../app/modbus-sync-server:/app/modbus-sync-server
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material
       - ../../chaincode:/app/chaincode
-    command: sh -c "python3 registration.py"
+    command: sh -c "python3 registration.py && python3 channelSecure.py"
     ports: 
-      - 5020:5020
+      - 8020:8020
 
   modbus-client:
     image: sflorenz05/modbusssihfb:modbus-sync-base
     container_name: modbus-client1
+    environment: 
+      - IP_SERVER=172.19.0.2
     depends_on: 
       - modbus-server
     working_dir: /app/modbus-sync-client
     volumes:
-      - ../../app/modbus-sync-client/sinc.py:/usr/local/lib/python3.8/dist-packages/pymodbus/client/sync.py    
+      - ../../app/modbus-sync-client/sync.py:/usr/local/lib/python3.8/dist-packages/pymodbus/client/sync.py
+      - ../../app/modbus-sync-client/hfbssisdk:/usr/local/lib/python3.8/dist-packages/hfbssisdk
       - ../../app/modbus-sync-client:/app/modbus-sync-client
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material
       - ../../chaincode:/app/chaincode
-    command: sh -c "python3 registration.py"
+    command: sh -c "python3 registration.py && python3 channelSecure.py"
     ports: 
-      - 5021:5021
+      - 8021:8021

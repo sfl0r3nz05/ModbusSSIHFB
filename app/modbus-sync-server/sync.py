@@ -369,14 +369,13 @@ class ModbusTcpServer(socketserver.ThreadingTCPServer):
 class ModbusTlsServer(socketserver.ThreadingTCPServer):
     def __init__(self, context, framer=None, identity=None,
                  address=None, handler=None, allow_reuse_address=False,
-                 sslctx=None, certfile=None, keyfile=None, cafile=None, **kwargs):
+                 sslctx=None, certfile=None, keyfile=None, **kwargs):
 
         self.sslctx = sslctx
         if self.sslctx is None:
             self.sslctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             self.sslctx.verify_mode = ssl.CERT_REQUIRED
             self.sslctx.load_cert_chain(certfile=certfile, keyfile=keyfile)
-            self.sslctx.load_verify_locations(cafile=cafile)
             self.sslctx.options |= ssl.OP_NO_TLSv1_1
             self.sslctx.options |= ssl.OP_NO_TLSv1
             self.sslctx.options |= ssl.OP_NO_SSLv3
@@ -591,7 +590,7 @@ def StartTcpServer(context=None, identity=None, address=None,
 
 
 def StartTlsServer(context=None, identity=None, address=None, sslctx=None,
-                   certfile=None, keyfile=None, cafile=None, custom_functions=[], **kwargs):
+                   certfile=None, keyfile=None, custom_functions=[], **kwargs):
     """ A factory to start and run a tls modbus server
 
     :param context: The ModbusServerContext datastore
@@ -607,8 +606,7 @@ def StartTlsServer(context=None, identity=None, address=None, sslctx=None,
     """
     framer = kwargs.pop("framer", ModbusTlsFramer)
     server = ModbusTlsServer(context, framer, identity, address, sslctx=sslctx,
-                             certfile=certfile, keyfile=keyfile, cafile=cafile, **kwargs)
-    print(server)
+                             certfile=certfile, keyfile=keyfile, **kwargs)
 
     for f in custom_functions:
         server.decoder.register(f)

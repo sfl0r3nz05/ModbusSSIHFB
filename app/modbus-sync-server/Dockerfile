@@ -9,6 +9,7 @@ RUN pip3 install jwt
 RUN pip3 install ecdsa
 RUN pip3 install PyJWT
 RUN pip3 install cryptography
+RUN pip3 install pyOpenSSL
 RUN git clone https://github.com/hyperledger/fabric-sdk-py.git && cd fabric-sdk-py && make install
 
 

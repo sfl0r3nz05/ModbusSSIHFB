@@ -31,6 +31,6 @@ services:
       - ../../connection-profile:/app/connection-profile
       - ../../crypto-material:/app/crypto-material
       - ../../chaincode:/app/chaincode
-    command: sh -c "python3 registration.py && python3 channelSecure.py"
+    command: sh -c "./wait-for-it.sh 172.19.0.2:8020 -t 60 && python3 registration.py && python3 channelSecure.py"
     ports: 
       - 8021:8021

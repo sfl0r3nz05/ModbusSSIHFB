@@ -72,6 +72,20 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
 	}
     if method == "getEntity" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+        jsonStr, err := json.Marshal(params)
+        if err != nil {
+            log.Errorf("[%s][%s][getIssuer] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+
+        err = json.Unmarshal([]byte(jsonStr), &entity)
+        if err != nil {
+            log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+        log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, entity)
+        result, err = cc.getEntity(stub, entity.Did)
+        log.Infof("[%s][getEntity] Params: %s", CHANNEL_ENV, result)
 	}
     if method == "setDidDoc" {
 		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)

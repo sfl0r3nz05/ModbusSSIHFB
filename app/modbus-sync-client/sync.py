@@ -18,6 +18,7 @@ from pymodbus.transaction import ModbusAsciiFramer, ModbusRtuFramer
 from pymodbus.transaction import ModbusTlsFramer
 from pymodbus.client.common import ModbusClientMixin
 from hfbssisdk.src.hfbssi.didFromPK import didFromPK
+from hfbssisdk.src.hfbssi.getEntity import requestGetEntity
 from hfbssisdk.src.hfbssi.getEntity import payloadToGetEntity
 
 # --------------------------------------------------------------------------- #
@@ -360,6 +361,16 @@ class ModbusTlsClient(ModbusTcpClient):
             did = didFromPK(pubKeyString)
             payload = payloadToGetEntity(self.keyfile, self.did_wallet_path, "getEntity", did)
             print(payload)
+
+            net_profile = '../connection-profile/2org_2peer_solo/network.json'
+            organization = 'org1.example.com'
+            user = 'User1'
+            channel = 'modbuschannel'
+            peer = 'peer0.org1.example.com'
+            chaincode = 'ssi_cc'
+            function = 'proxy'
+            response = requestGetEntity(net_profile, organization, user, channel, peer, chaincode, function, payload)
+            print(response)
         except socket.error as msg:
             _logger.error('Connection to (%s, %s) '
                           'failed: %s' % (self.host, self.port, msg))

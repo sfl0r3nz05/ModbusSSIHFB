@@ -58,7 +58,7 @@ def requestGetEntity(net_profile, organization, user, channel, peer, chaincode, 
     os.environ['GOPATH'] = os.path.abspath(gopath)
 
     args = [arg0]
-    loop.run_until_complete(cli.chaincode_invoke(
+    response = loop.run_until_complete(cli.chaincode_invoke(
         requestor=org1_admin,
         channel_name=channel,
         peers=[peer],
@@ -68,3 +68,4 @@ def requestGetEntity(net_profile, organization, user, channel, peer, chaincode, 
         wait_for_event=True,
         fcn=function,
     ))
+    return response

@@ -45,34 +45,34 @@ func (cc *Chaincode) setEntity(stub shim.ChaincodeStubInterface, did string, iss
 	return result, nil
 }
 
-func (cc *Chaincode) getEntity(stub shim.ChaincodeStubInterface, did string) (*Entity, error) {
+func (cc *Chaincode) getEntity(stub shim.ChaincodeStubInterface, did string) (string, error) {
 	log.Infof("[%s][%s][getEntity] Get Identity for did %s", CHANNEL_ENV, ENTITYREGISTRY, did)
 	idStored := Entity{}
 	var err error
 
-	didID, err := json.Marshal(Issuer{Did: did})
+	didID, err := json.Marshal(Entity{Did: did})
 	if err != nil {
 		log.Errorf("[%s][%s][getEntity] Error parsing: %v", CHANNEL_ENV, ENTITYREGISTRY, err.Error())
-		return nil, errors.New(ERRORParsingID + err.Error())
+		return "", errors.New(ERRORParsingID + err.Error())
 	}
 	
 	idBytes, err := stub.GetState(string(didID))
 	if err != nil {
 		log.Errorf("[%s][%s][getEntity] Error getting identity: %v", CHANNEL_ENV, ENTITYREGISTRY, err.Error())
-		return nil, errors.New(ERRORGetID + err.Error())
+		return "",errors.New(ERRORGetID + err.Error())
 	}
 	if idBytes == nil {
 		log.Errorf("[%s][%s][getEntity] Error the identity does not exist", CHANNEL_ENV, ENTITYREGISTRY)
 		log.Errorf("[%s][%s][getEntity] Return error", CHANNEL_ENV, ENTITYREGISTRY)
-		return nil, errors.New(ERRORnotID)
+		return "",errors.New(ERRORnotID)
 	}
 
 	err = json.Unmarshal(idBytes, &idStored)
 	if err != nil {
 		log.Errorf("[%s][%s][getEntity] Error parsing identity: %v", CHANNEL_ENV, ENTITYREGISTRY, err.Error())
-		return nil, errors.New(ERRORParsingID + err.Error())
+		return "", errors.New(ERRORParsingID + err.Error())
 	}
-	log.Infof("[%s][%s][getEntity] Get PublicKey for did %s", CHANNEL_ENV, ENTITYREGISTRY, did)
+	log.Infof("[%s][%s][getEntity] Get PublicKey for idStored %s", CHANNEL_ENV, ENTITYREGISTRY, idStored.PublicKey)
 
-	return &idStored, nil
+	return idStored.PublicKey, nil
 }

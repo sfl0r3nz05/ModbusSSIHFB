@@ -8,6 +8,8 @@ from pymodbus.transaction import ModbusRtuFramer, ModbusBinaryFramer
 def run_server():
     server_cert = 'server.crt'
     server_key = 'privk.key'
+    cafile_cert = '../modbus-sync-client/client.crt'
+    did_wallet_path = "walletDid.json"
 
     store = ModbusSlaveContext(
         di=ModbusSequentialDataBlock(0, [17]*100),
@@ -25,7 +27,7 @@ def run_server():
     identity.ModelName = 'Pymodbus Server'
     identity.MajorMinorRevision = '2.3.0'
 
-    StartTlsServer(context, identity=identity, address=("0.0.0.0", 8020), certfile=server_cert, keyfile=server_key)
+    StartTlsServer(context, identity=identity, address=("0.0.0.0", 8020), certfile=server_cert, keyfile=server_key, cafile=cafile_cert, did_wallet_path=did_wallet_path)
 
 if __name__ == "__main__":
     run_server()

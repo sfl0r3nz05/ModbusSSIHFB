@@ -3,13 +3,14 @@ Implementation of a Threaded Modbus Server
 ------------------------------------------
 
 """
-from binascii import b2a_hex
+import ssl
+import json
 import serial
 import socket
-import ssl
+import OpenSSL
 import traceback
 import threading
-import OpenSSL
+from binascii import b2a_hex
 from pymodbus.constants import Defaults
 from pymodbus.utilities import hexlify_packets
 from pymodbus.factory import ServerDecoder
@@ -20,6 +21,8 @@ from pymodbus.transaction import *
 from pymodbus.exceptions import NotImplementedException, NoSuchSlaveException
 from pymodbus.pdu import ModbusExceptions as merror
 from pymodbus.compat import socketserver, byte2int
+from hfbssisdk.src.hfbssi.didFromPK import didFromPK
+from hfbssisdk.src.hfbssi.getEntity import payloadToGetEntity
 
 # --------------------------------------------------------------------------- #
 # Logging
@@ -369,8 +372,10 @@ class ModbusTcpServer(socketserver.ThreadingTCPServer):
 class ModbusTlsServer(socketserver.ThreadingTCPServer):
     def __init__(self, context, framer=None, identity=None,
                  address=None, handler=None, allow_reuse_address=False,
-                 sslctx=None, certfile=None, keyfile=None, **kwargs):
-
+                 sslctx=None, certfile=None, keyfile=None, cafile=None, did_wallet_path= None, **kwargs):
+        
+        self.keyfile = keyfile
+        self.did_wallet_path = did_wallet_path
         self.sslctx = sslctx
         if self.sslctx is None:
             self.sslctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -380,7 +385,18 @@ class ModbusTlsServer(socketserver.ThreadingTCPServer):
             self.sslctx.options |= ssl.OP_NO_TLSv1
             self.sslctx.options |= ssl.OP_NO_SSLv3
             self.sslctx.options |= ssl.OP_NO_SSLv2
-        
+
+        cafile_byte = open(certfile, 'rt').read()
+        print(cafile_byte)
+        x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cafile_byte)
+        pubKeyObject = x509.get_pubkey()
+        pubKeyString = OpenSSL.crypto.dump_publickey(OpenSSL.crypto.FILETYPE_PEM, pubKeyObject)
+        print(pubKeyString)
+        did = didFromPK(pubKeyString)
+        print(did)
+        payload = payloadToGetEntity(self.keyfile, self.did_wallet_path, "getEntity", did)
+        print(payload)
+
         ModbusTcpServer.__init__(self, context, framer, identity, address,
                                  handler, allow_reuse_address, **kwargs)
 
@@ -590,7 +606,7 @@ def StartTcpServer(context=None, identity=None, address=None,
 
 
 def StartTlsServer(context=None, identity=None, address=None, sslctx=None,
-                   certfile=None, keyfile=None, custom_functions=[], **kwargs):
+                   certfile=None, keyfile=None, cafile=None, did_wallet_path=None, custom_functions=[], **kwargs):
     """ A factory to start and run a tls modbus server
 
     :param context: The ModbusServerContext datastore
@@ -606,7 +622,7 @@ def StartTlsServer(context=None, identity=None, address=None, sslctx=None,
     """
     framer = kwargs.pop("framer", ModbusTlsFramer)
     server = ModbusTlsServer(context, framer, identity, address, sslctx=sslctx,
-                             certfile=certfile, keyfile=keyfile, **kwargs)
+                             certfile=certfile, keyfile=keyfile, cafile=cafile, did_wallet_path= did_wallet_path, **kwargs)
 
     for f in custom_functions:
         server.decoder.register(f)
@@ -662,7 +678,4 @@ def StartSerialServer(context=None, identity=None,  custom_functions=[],
 # --------------------------------------------------------------------------- #
 
 
-__all__ = [
-    "StartTcpServer", "StartTlsServer", "StartUdpServer", "StartSerialServer"
-]
-
+__all__ = ["StartTcpServer", "StartTlsServer", "StartUdpServer", "StartSerialServer"]

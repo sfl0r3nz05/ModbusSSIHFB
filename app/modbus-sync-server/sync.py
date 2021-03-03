@@ -24,6 +24,8 @@ from pymodbus.compat import socketserver, byte2int
 from hfbssisdk.src.hfbssi.didFromPK import didFromPK
 from hfbssisdk.src.hfbssi.getEntity import requestGetEntity
 from hfbssisdk.src.hfbssi.getEntity import payloadToGetEntity
+from hfbssisdk.src.hfbssi.getDidDoc import requestDidDoc
+from hfbssisdk.src.hfbssi.getDidDoc import payloadToDidDoc
 
 # --------------------------------------------------------------------------- #
 # Logging
@@ -402,7 +404,19 @@ class ModbusTlsServer(socketserver.ThreadingTCPServer):
         chaincode = 'ssi_cc'
         function = 'proxy'
         response = requestGetEntity(net_profile, organization, user, channel, peer, chaincode, function, payload)
-        print (response)
+
+        payload = payloadToDidDoc(self.keyfile, self.did_wallet_path, "getDidDoc", did)
+        print(payload)
+
+        net_profile = '../connection-profile/2org_2peer_solo/network.json'
+        organization = 'org2.example.com'
+        user = 'User1'
+        channel = 'modbuschannel'
+        peer = 'peer0.org2.example.com'
+        chaincode = 'ssi_cc'
+        function = 'proxy'
+        response = requestDidDoc(net_profile, organization, user, channel, peer, chaincode, function, payload)
+        print(response)
 
         ModbusTcpServer.__init__(self, context, framer, identity, address,
                                  handler, allow_reuse_address, **kwargs)

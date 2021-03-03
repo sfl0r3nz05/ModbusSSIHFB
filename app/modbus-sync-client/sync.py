@@ -20,6 +20,8 @@ from pymodbus.client.common import ModbusClientMixin
 from hfbssisdk.src.hfbssi.didFromPK import didFromPK
 from hfbssisdk.src.hfbssi.getEntity import requestGetEntity
 from hfbssisdk.src.hfbssi.getEntity import payloadToGetEntity
+from hfbssisdk.src.hfbssi.getDidDoc import requestDidDoc
+from hfbssisdk.src.hfbssi.getDidDoc import payloadToDidDoc
 
 # --------------------------------------------------------------------------- #
 # Logging
@@ -360,7 +362,6 @@ class ModbusTlsClient(ModbusTcpClient):
             pubKeyString = OpenSSL.crypto.dump_publickey(OpenSSL.crypto.FILETYPE_PEM, pubKeyObject)
             did = didFromPK(pubKeyString)
             payload = payloadToGetEntity(self.keyfile, self.did_wallet_path, "getEntity", did)
-            print(payload)
 
             net_profile = '../connection-profile/2org_2peer_solo/network.json'
             organization = 'org1.example.com'
@@ -370,7 +371,20 @@ class ModbusTlsClient(ModbusTcpClient):
             chaincode = 'ssi_cc'
             function = 'proxy'
             response = requestGetEntity(net_profile, organization, user, channel, peer, chaincode, function, payload)
+
+            payload = payloadToDidDoc(self.keyfile, self.did_wallet_path, "getDidDoc", did)
+            print(payload)
+
+            net_profile = '../connection-profile/2org_2peer_solo/network.json'
+            organization = 'org1.example.com'
+            user = 'User1'
+            channel = 'modbuschannel'
+            peer = 'peer0.org1.example.com'
+            chaincode = 'ssi_cc'
+            function = 'proxy'
+            response = requestDidDoc(net_profile, organization, user, channel, peer, chaincode, function, payload)
             print(response)
+
         except socket.error as msg:
             _logger.error('Connection to (%s, %s) '
                           'failed: %s' % (self.host, self.port, msg))

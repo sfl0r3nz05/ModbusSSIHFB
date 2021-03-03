@@ -67,7 +67,9 @@ port = "802"
 fnc = "5"
 address = "10"
 offset = "10"
-createDidDocServer(path_priv_key, did_wallet_path, wallet_DidDoc, issuer, port, fnc, address, offset)
+generator = "51"
+plain_number = "101"
+createDidDocServer(path_priv_key, did_wallet_path, wallet_DidDoc, issuer, port, fnc, address, offset, generator, plain_number)
 
 
 ############################################################# ADMIN ##################################################################################################################################################################

@@ -35,7 +35,7 @@ def createDidDocClient(path_priv_key, did_wallet_path, wallet_DidDoc, issuer):
     ######################################################################
 
 
-def createDidDocServer(path_priv_key, did_wallet_path, wallet_DidDoc, issuer, port, fnc, address, offset):
+def createDidDocServer(path_priv_key, did_wallet_path, wallet_DidDoc, issuer, port, fnc, address, offset, generator, plain_number):
 
     with open(path_priv_key, 'r') as ec_priv_file:
         priv_eckey = ecdsa.SigningKey.from_pem(ec_priv_file.read())
@@ -55,7 +55,7 @@ def createDidDocServer(path_priv_key, did_wallet_path, wallet_DidDoc, issuer, po
         issuer = issuer
         signature = ""
         countersignature = ""
-        diddoc = {"context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:{}".format(ipaddress, port), "functionCode": fnc, "startingAddress": address, "offset": offset,}], "signature": signature, "countersignature": countersignature}
+        diddoc = {"context": "https://www.w3.org/ns/did/v1", "did": message.get('did'), "authentication": [{ "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1", "type": "Ed25519VerificationKey2018", "issuer": issuer, "publicKeyBase58": pubKeyBase64.decode("utf-8")}],"service": [{ "id": "did:example:123456789abcdefghi#vcs", "type": "VerifiableCredentialService", "serviceEndpoint": "mbaps://{}:{}".format(ipaddress, port), "functionCode": fnc, "startingAddress": address, "offset": offset, "generator": generator, "plain_number": plain_number,}], "signature": signature, "countersignature": countersignature}
         temp.append(diddoc)
         
     with open(wallet_DidDoc, 'w') as wallet_file:

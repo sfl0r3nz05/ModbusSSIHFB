@@ -101,11 +101,25 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
             log.Errorf("[%s][%s][verifyArgs] Error parsing: %v", CHANNEL_ENV, err.Error())
             return "", err
         }
-        log.Infof("[%s][verifyArgs][CreateIdentity] diddoc: %s", CHANNEL_ENV, diddoc)
-        result, err = cc.setDidDoc(stub, diddoc.Did, diddoc.Context, diddoc.Signature, diddoc.Countersignature, diddoc.Authentication[0].Id, diddoc.Authentication[0].Type, diddoc.Authentication[0].Issuer, diddoc.Authentication[0].PublicKeyBase58,  diddoc.Service[0].Id, diddoc.Service[0].Type, diddoc.Service[0].ServiceEndpoint, diddoc.Service[0].FunctionCode, diddoc.Service[0].StartingAddress, diddoc.Service[0].Offset)
+        log.Infof("[%s][verifyArgs][setDidDoc] diddoc: %s", CHANNEL_ENV, diddoc)
+        result, err = cc.setDidDoc(stub, diddoc.Did, diddoc.Context, diddoc.Signature, diddoc.Countersignature, diddoc.Authentication[0].Id, diddoc.Authentication[0].Type, diddoc.Authentication[0].Issuer, diddoc.Authentication[0].PublicKeyBase58,  diddoc.Service[0].Id, diddoc.Service[0].Type, diddoc.Service[0].ServiceEndpoint, diddoc.Service[0].FunctionCode, diddoc.Service[0].StartingAddress, diddoc.Service[0].Offset, diddoc.Service[0].Generator, diddoc.Service[0].PlainNumber)
 	}
     if method == "getDidDoc" {
-		log.Infof("[%s][verifyArgs][CreateIdentity] Params: %s", CHANNEL_ENV, params)
+		log.Infof("[%s][verifyArgs][getDidDoc] Params: %s", CHANNEL_ENV, params)
+        jsonStr, err := json.Marshal(params)
+        if err != nil {
+            log.Errorf("[%s][%s][getDidDoc] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+
+        err = json.Unmarshal([]byte(jsonStr), &entity)
+        if err != nil {
+            log.Errorf("[%s][%s][getDidDoc] Error parsing: %v", CHANNEL_ENV, err.Error())
+            return "", err
+        }
+        log.Infof("[%s][verifyArgs][getDidDoc] Params: %s", CHANNEL_ENV, entity)
+        result, err = cc.getEntity(stub, entity.Did)
+        log.Infof("[%s][getDidDoc] Params: %s", CHANNEL_ENV, result)
 	}
     
     return result, err

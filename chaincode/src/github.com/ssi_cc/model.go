@@ -70,6 +70,8 @@ type DidDoc struct {
 	ServiceFunctCode	string `json:"serviceFunctCode"`
 	ServiceStartAddr	string `json:"serviceStartAdd"`
 	ServiceOffset	string `json:"serviceOffset"`
+	ServiceGenerator	string `json:"serviceGenerator"`
+	ServicePlainNumber	string `json:"servicePlainNumber"`
 }
 
 type Authentication struct{
@@ -86,6 +88,8 @@ type Service struct{
 	FunctionCode	string `json:"functionCode"`
 	StartingAddress	string `json:"startingAddress"`
 	Offset	string `json:"offset"`
+	Generator string `json:"generator"`
+	PlainNumber string `json:"plainNumber"`
 }
 
 // Error responses

@@ -5,6 +5,7 @@ import serial
 import time
 import ssl
 import sys
+import json
 from functools import partial
 from pymodbus.constants import Defaults
 from pymodbus.utilities import hexlify_packets, ModbusTransactionState
@@ -18,6 +19,7 @@ from pymodbus.transaction import ModbusAsciiFramer, ModbusRtuFramer
 from pymodbus.transaction import ModbusTlsFramer
 from pymodbus.client.common import ModbusClientMixin
 from hfbssisdk.src.hfbssi.didFromPK import didFromPK
+from hfbssisdk.src.hfbssi.diffie import DiffieHellman
 from hfbssisdk.src.hfbssi.getEntity import requestGetEntity
 from hfbssisdk.src.hfbssi.getEntity import payloadToGetEntity
 from hfbssisdk.src.hfbssi.getDidDoc import requestDidDoc
@@ -356,10 +358,15 @@ class ModbusTlsClient(ModbusTcpClient):
             self.socket.settimeout(self.timeout)
             self.socket.connect((self.host, self.port))
             self.socket.do_handshake()
+
+### PUBLICKEY FROM CERT  ##########################################################################################
             cert = self.socket.getpeercert(binary_form=True)
             x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_ASN1, cert)
             pubKeyObject = x509.get_pubkey()
             pubKeyString = OpenSSL.crypto.dump_publickey(OpenSSL.crypto.FILETYPE_PEM, pubKeyObject)
+### PUBLICKEY FROM CERT  ##########################################################################################
+
+### DID FROM PUBLICKEY ############################################################################################
             did = didFromPK(pubKeyString)
             payload = payloadToGetEntity(self.keyfile, self.did_wallet_path, "getEntity", did)
 
@@ -371,7 +378,9 @@ class ModbusTlsClient(ModbusTcpClient):
             chaincode = 'ssi_cc'
             function = 'proxy'
             response = requestGetEntity(net_profile, organization, user, channel, peer, chaincode, function, payload)
+### DID FROM PUBLICKEY ##############################################################################################
 
+### RECOVER DID DOCUMENT ########################################################################################
             payload = payloadToDidDoc(self.keyfile, self.did_wallet_path, "getDidDoc", did)
             print(payload)
 
@@ -383,7 +392,23 @@ class ModbusTlsClient(ModbusTcpClient):
             chaincode = 'ssi_cc'
             function = 'proxy'
             response = requestDidDoc(net_profile, organization, user, channel, peer, chaincode, function, payload)
-            print(response)
+### RECOVER DID DOCUMENT ########################################################################################
+
+### RECOVER GENERATOR Y PLAIN NUMBER #############################################################################
+            didDocParsed = json.loads(response)
+            print(didDocParsed["serviceGenerator"])
+            print(didDocParsed["servicePlainNumber"])
+### RECOVER GENERATOR Y PLAIN NUMBER #############################################################################
+
+### DEFINE SECRET ################################################################################################
+            x=3
+### DEFINE SECRET ################################################################################################
+
+### DEFINE BODY A ################################################################################################
+            a = DiffieHellman(x)
+            print(a.public)
+            print(a.secret)
+### DEFINE BODY A ################################################################################################
 
         except socket.error as msg:
             _logger.error('Connection to (%s, %s) '

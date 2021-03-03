@@ -7,7 +7,7 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
-func (cc *Chaincode) setDidDoc(stub shim.ChaincodeStubInterface, did string, context string, signature string, countersignature string, auth_id string, auth_type string, auth_issuer string, auth_Public string, serv_id string, serv_type string, serv_endpoint string, serv_func string, serv_start string, serv_offset string, serv_generator string, serv_plain_number string) (string, error) {
+func (cc *Chaincode) setDidDoc(stub shim.ChaincodeStubInterface, did string, context string, signature string, countersignature string, auth_id string, auth_type string, auth_issuer string, auth_Public string, serv_id string, serv_type string, serv_endpoint string, serv_func string, serv_start string, serv_offset string, serv_generator string, serv_plainNumber string) (string, error) {
 	log.Infof("[%s][%s][setDidDoc] Create DidDoc for did %s", CHANNEL_ENV, DIDDOCREGISTRY, did)
 	var result string
 	var err error
@@ -20,7 +20,7 @@ func (cc *Chaincode) setDidDoc(stub shim.ChaincodeStubInterface, did string, con
 		return "", errors.New(ERRORParsingID + err.Error())
 	}
 
-	diDocStore, err := json.Marshal(DidDoc{Context: context, Signature: signature, Countersignature: countersignature, AuthId: auth_id, AuthType: auth_type, AuthIssuer: auth_issuer, AuthPublicKeyBase58: auth_Public, ServiceId: serv_id, ServiceType: serv_type, ServiceEndPoint: serv_endpoint, ServiceFunctCode: serv_func, ServiceStartAddr: serv_start, ServiceOffset: serv_offset, ServiceGenerator: serv_generator, ServicePlainNumber: serv_plain_number})
+	diDocStore, err := json.Marshal(DidDoc{Context: context, Signature: signature, Countersignature: countersignature, AuthId: auth_id, AuthType: auth_type, AuthIssuer: auth_issuer, AuthPublicKeyBase58: auth_Public, ServiceId: serv_id, ServiceType: serv_type, ServiceEndPoint: serv_endpoint, ServiceFunctCode: serv_func, ServiceStartAddr: serv_start, ServiceOffset: serv_offset, ServiceGenerator: serv_generator, ServicePlainNumber: serv_plainNumber})
 	if err != nil {
 		log.Errorf("[%s][%s][setDidDoc] Error parsing: %v", CHANNEL_ENV, DIDDOCREGISTRY, err.Error())
 		return "", errors.New(ERRORParsingID + err.Error())
@@ -65,5 +65,10 @@ func (cc *Chaincode) getDidDoc(stub shim.ChaincodeStubInterface, did string) (st
 	}
 	log.Infof("[%s][%s][getDidDoc] Get PublicKey for idStored %s", CHANNEL_ENV, ENTITYREGISTRY, idStored)
 
-	return idStored.ServiceGenerator, nil
+	out, err := json.Marshal(idStored)
+    if err != nil {
+        panic (err)
+    }
+
+	return string(out), nil
 }

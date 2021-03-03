@@ -111,14 +111,13 @@ func (cc *Chaincode) verifyArgs(stub shim.ChaincodeStubInterface, args []string)
             log.Errorf("[%s][%s][getDidDoc] Error parsing: %v", CHANNEL_ENV, err.Error())
             return "", err
         }
-
-        err = json.Unmarshal([]byte(jsonStr), &entity)
+        err = json.Unmarshal([]byte(jsonStr), &diddoc)
         if err != nil {
             log.Errorf("[%s][%s][getDidDoc] Error parsing: %v", CHANNEL_ENV, err.Error())
             return "", err
         }
         log.Infof("[%s][verifyArgs][getDidDoc] Params: %s", CHANNEL_ENV, entity)
-        result, err = cc.getEntity(stub, entity.Did)
+        result, err = cc.getDidDoc(stub, diddoc.Did)
         log.Infof("[%s][getDidDoc] Params: %s", CHANNEL_ENV, result)
 	}
     

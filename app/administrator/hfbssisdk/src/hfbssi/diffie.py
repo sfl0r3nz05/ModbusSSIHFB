@@ -9,7 +9,7 @@ class DiffieHellman:
 
   def __init__(self,secret=0):
     self.secret = random.randrange(1 << (self.G.bit_length() - 1), self.G - 1)
-    self.public = pow(self.G, self.secret, self.P)
+    self.public = pow(int(self.G), self.secret, int(self.P))
 
   def prove_shared_secret(self, remote_pub):
     G = self.G; prover_pub = self.public; phi = self. P - 1;

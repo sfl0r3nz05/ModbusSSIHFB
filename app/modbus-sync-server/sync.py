@@ -4,6 +4,7 @@ Implementation of a Threaded Modbus Server
 
 """
 import ssl
+import time
 import json
 import serial
 import socket
@@ -11,23 +12,18 @@ import OpenSSL
 import traceback
 import threading
 from binascii import b2a_hex
-from pymodbus.constants import Defaults
-from pymodbus.utilities import hexlify_packets
-from pymodbus.factory import ServerDecoder
-from pymodbus.datastore import ModbusServerContext
-from pymodbus.device import ModbusControlBlock
-from pymodbus.device import ModbusDeviceIdentification
 from pymodbus.transaction import *
-from pymodbus.exceptions import NotImplementedException, NoSuchSlaveException
-from pymodbus.pdu import ModbusExceptions as merror
+from pymodbus.constants import Defaults
+from pymodbus.factory import ServerDecoder
+from pymodbus.utilities import hexlify_packets
+from pymodbus.device import ModbusControlBlock
+from pymodbus.datastore import ModbusServerContext
 from pymodbus.compat import socketserver, byte2int
-from hfbssisdk.src.hfbssi.didFromPK import didFromPK
-from hfbssisdk.src.hfbssi.diffie import DiffieHellman
-from hfbssisdk.src.hfbssi.didFromPK import didFromWallet
-from hfbssisdk.src.hfbssi.getEntity import requestGetEntity
-from hfbssisdk.src.hfbssi.getEntity import payloadToGetEntity
-from hfbssisdk.src.hfbssi.getDidDoc import requestDidDoc
-from hfbssisdk.src.hfbssi.getDidDoc import payloadToDidDoc
+from pymodbus.pdu import ModbusExceptions as merror
+from hfbssisdk.src.hfbssi.znkServer import znkdhServer
+from pymodbus.device import ModbusDeviceIdentification
+from hfbssisdk.src.hfbssi.channelVerifServer import channelVerificationServer
+from pymodbus.exceptions import NotImplementedException, NoSuchSlaveException
 
 # --------------------------------------------------------------------------- #
 # Logging
@@ -391,59 +387,10 @@ class ModbusTlsServer(socketserver.ThreadingTCPServer):
             self.sslctx.options |= ssl.OP_NO_SSLv3
             self.sslctx.options |= ssl.OP_NO_SSLv2
 
-### PUBLICKEY FROM CERT  ##########################################################################################
-        cafile_byte = open(certfile, 'rt').read()
-        x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cafile_byte)
-        pubKeyObject = x509.get_pubkey()
-        pubKeyString = OpenSSL.crypto.dump_publickey(OpenSSL.crypto.FILETYPE_PEM, pubKeyObject)
-### PUBLICKEY FROM CERT  ##########################################################################################
+        response = channelVerificationServer(certfile, self.keyfile, self.did_wallet_path)
 
-### DID FROM PUBLICKEY ##########################################################################################
-        did = didFromPK(pubKeyString)
-        payload = payloadToGetEntity(self.keyfile, self.did_wallet_path, "getEntity", did)
-
-        net_profile = '../connection-profile/2org_2peer_solo/network.json'
-        organization = 'org2.example.com'
-        user = 'User1'
-        channel = 'modbuschannel'
-        peer = 'peer0.org2.example.com'
-        chaincode = 'ssi_cc'
-        function = 'proxy'
-        response = requestGetEntity(net_profile, organization, user, channel, peer, chaincode, function, payload)
-### DID FROM PUBLICKEY ##########################################################################################
-
-### RECOVER DID DOCUMENT ########################################################################################
-        did = didFromWallet(self.did_wallet_path)
-
-        payload = payloadToDidDoc(self.keyfile, self.did_wallet_path, "getDidDoc", did)
-        print(payload)
-
-        net_profile = '../connection-profile/2org_2peer_solo/network.json'
-        organization = 'org2.example.com'
-        user = 'User1'
-        channel = 'modbuschannel'
-        peer = 'peer0.org2.example.com'
-        chaincode = 'ssi_cc'
-        function = 'proxy'
-        response = requestDidDoc(net_profile, organization, user, channel, peer, chaincode, function, payload)
-        print(response)
-### RECOVER DID DOCUMENT ########################################################################################
-
-### RECOVER GENERATOR Y PLAIN NUMBER #############################################################################
-        didDocParsed = json.loads(response)
-        print(didDocParsed["serviceGenerator"])
-        print(didDocParsed["servicePlainNumber"])
-### RECOVER GENERATOR Y PLAIN NUMBER #############################################################################
-
-### DEFINE SECRET ################################################################################################
-        y=4
-### DEFINE SECRET ################################################################################################
-
-### DEFINE BODY B ################################################################################################
-        b = DiffieHellman(y)
-        print(b.public)
-        print(b.secret)
-### DEFINE BODY B ################################################################################################
+        if response:
+            znkdhServer(self.did_wallet_path, self.keyfile)
 
         ModbusTcpServer.__init__(self, context, framer, identity, address,
                                  handler, allow_reuse_address, **kwargs)

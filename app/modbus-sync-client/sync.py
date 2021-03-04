@@ -8,22 +8,18 @@ import sys
 import json
 from functools import partial
 from pymodbus.constants import Defaults
-from pymodbus.utilities import hexlify_packets, ModbusTransactionState
 from pymodbus.factory import ClientDecoder
-from pymodbus.exceptions import NotImplementedException, ParameterException
+from pymodbus.transaction import ModbusTlsFramer
 from pymodbus.exceptions import ConnectionException
+from pymodbus.client.common import ModbusClientMixin
+from hfbssisdk.src.hfbssi.znkClient import znkdhClient
 from pymodbus.transaction import FifoTransactionManager
 from pymodbus.transaction import DictTransactionManager
-from pymodbus.transaction import ModbusSocketFramer, ModbusBinaryFramer
 from pymodbus.transaction import ModbusAsciiFramer, ModbusRtuFramer
-from pymodbus.transaction import ModbusTlsFramer
-from pymodbus.client.common import ModbusClientMixin
-from hfbssisdk.src.hfbssi.didFromPK import didFromPK
-from hfbssisdk.src.hfbssi.diffie import DiffieHellman
-from hfbssisdk.src.hfbssi.getEntity import requestGetEntity
-from hfbssisdk.src.hfbssi.getEntity import payloadToGetEntity
-from hfbssisdk.src.hfbssi.getDidDoc import requestDidDoc
-from hfbssisdk.src.hfbssi.getDidDoc import payloadToDidDoc
+from pymodbus.utilities import hexlify_packets, ModbusTransactionState
+from pymodbus.transaction import ModbusSocketFramer, ModbusBinaryFramer
+from pymodbus.exceptions import NotImplementedException, ParameterException
+from hfbssisdk.src.hfbssi.channelVerifClient import channelVerificationClient
 
 # --------------------------------------------------------------------------- #
 # Logging
@@ -360,61 +356,19 @@ class ModbusTlsClient(ModbusTcpClient):
             self.socket.do_handshake()
 
 ### PUBLICKEY FROM CERT  ##########################################################################################
+            start = time.process_time()
             cert = self.socket.getpeercert(binary_form=True)
-            x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_ASN1, cert)
-            pubKeyObject = x509.get_pubkey()
-            pubKeyString = OpenSSL.crypto.dump_publickey(OpenSSL.crypto.FILETYPE_PEM, pubKeyObject)
-### PUBLICKEY FROM CERT  ##########################################################################################
-
-### DID FROM PUBLICKEY ############################################################################################
-            did = didFromPK(pubKeyString)
-            payload = payloadToGetEntity(self.keyfile, self.did_wallet_path, "getEntity", did)
-
-            net_profile = '../connection-profile/2org_2peer_solo/network.json'
-            organization = 'org1.example.com'
-            user = 'User1'
-            channel = 'modbuschannel'
-            peer = 'peer0.org1.example.com'
-            chaincode = 'ssi_cc'
-            function = 'proxy'
-            response = requestGetEntity(net_profile, organization, user, channel, peer, chaincode, function, payload)
-### DID FROM PUBLICKEY ##############################################################################################
-
-### RECOVER DID DOCUMENT ########################################################################################
-            payload = payloadToDidDoc(self.keyfile, self.did_wallet_path, "getDidDoc", did)
-            print(payload)
-
-            net_profile = '../connection-profile/2org_2peer_solo/network.json'
-            organization = 'org1.example.com'
-            user = 'User1'
-            channel = 'modbuschannel'
-            peer = 'peer0.org1.example.com'
-            chaincode = 'ssi_cc'
-            function = 'proxy'
-            response = requestDidDoc(net_profile, organization, user, channel, peer, chaincode, function, payload)
-### RECOVER DID DOCUMENT ########################################################################################
-
-### RECOVER GENERATOR Y PLAIN NUMBER #############################################################################
-            didDocParsed = json.loads(response)
-            print(didDocParsed["serviceGenerator"])
-            print(didDocParsed["servicePlainNumber"])
-### RECOVER GENERATOR Y PLAIN NUMBER #############################################################################
-
-### DEFINE SECRET ################################################################################################
-            x=3
-### DEFINE SECRET ################################################################################################
-
-### DEFINE BODY A ################################################################################################
-            a = DiffieHellman(x)
-            print(a.public)
-            print(a.secret)
-### DEFINE BODY A ################################################################################################
-
+            response, did = channelVerificationClient(cert, self.keyfile, self.did_wallet_path)
+            print(time.process_time() - start)
+            start = time.process_time()
+            if response:
+                B = znkdhClient(self.did_wallet_path, self.keyfile, did)
+            print(time.process_time() - start)
         except socket.error as msg:
             _logger.error('Connection to (%s, %s) '
                           'failed: %s' % (self.host, self.port, msg))
             self.close()
-        return self.socket is not None
+        return self.socket is not None, B
 
     def _recv(self, size):
         """ Reads data from the underlying descriptor

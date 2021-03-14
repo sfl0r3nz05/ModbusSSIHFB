@@ -41,6 +41,9 @@ e.g.
    go get -u golang.org/x/sys
    sudo cp -rf /home/ubuntu/go/src/golang.org/x/sys /var/lib/docker/overlay2/5eb7186e78e0e9e4a6ee957f414144e5d40349e04aaf7fb75f59c65b4a9e0628/diff/opt/gopath/src/golang.org/x/
 
+   go get github.com/google/uuid
+   sudo cp -rf /home/ubuntu/go/src/github.com/google /var/lib/docker/overlay2/5eb7186e78e0e9e4a6ee957f414144e5d40349e04aaf7fb75f59c65b4a9e0628/diff/opt/gopath/src/github.com/
+
 6. How test
    cd app/administrator
    python3 did-creator.py

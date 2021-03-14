@@ -1,3 +1,30 @@
 {
-    "diddoc": []
+    "diddoc": [
+        {
+            "context": "https://www.w3.org/ns/did/v1",
+            "did": "did:vtn:trustid:dabbd37c0a898f90eb2c4f0f5438bb020a9264567cb4466373c3b5b10215b9f4",
+            "authentication": [
+                {
+                    "id": "did:vtn:trustid:4981f7c8f152f14d009c1b69d4972c84fdb4985055dc33d4d25c821ab015ad7e#keys-1",
+                    "type": "Ed25519VerificationKey2018",
+                    "issuer": "did:vtn:trustid:e320a9308621efa599ca7b9c2462ac05421dfe6ae4cd7dd91132ace1a4f6829b",
+                    "publicKeyBase58": "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFblBtNXhySTRzWTl1QWFWcFNUdlc2UGczOENmaQp1U3Y5VnhHVVNISDVSbUZRWURBTVZBRm8zZTlsbVJKZWxpSVJQbXZJQXhnZTBnQUUxV3BRNG9mbmNBPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg=="
+                }
+            ],
+            "service": [
+                {
+                    "id": "did:example:123456789abcdefghi#vcs",
+                    "type": "VerifiableCredentialService",
+                    "serviceEndpoint": "mbaps://172.19.0.2:802",
+                    "functionCode": "5",
+                    "startingAddress": "10",
+                    "offset": "10",
+                    "generator": "51",
+                    "plainNumber": "101"
+                }
+            ],
+            "signature": "MEQCIF/9wIoDQhmj2t56ni3GLOvz3bM4Leee1C+9i0qo/M+WAiB7wiL3CtGrNA4k+nvu7xcKxJRQISEKhH8t2aeh3o3XTQ==",
+            "countersignature": "MEQCIA3RqYZPfkGmiUcfAxncKOQYSOY8w+5Ki7DAVRoF1lj4AiBznorvVm45gEygMOplHIkUNx5eM51S4yq5nemNhF6+mA=="
+        }
+    ]
 }
